@@ -25,3 +25,6 @@ venv/
 price-report.txt
 link-report.txt
 link-summary.txt
+
+# 维护手册只留本地，不进仓库，也不随站点发布
+docs/maintenance-guide.md

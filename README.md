@@ -118,4 +118,4 @@
 
 ## 关于本页
 
-本站是纯静态站点，正文只在这里维护一份，站点首页会自动同步。各平台客户端的配置步骤见 [iOS 上手教程](guides/ios-proxy-setup.html)，部署方式与维护说明见 [维护手册](docs/maintenance-guide.md)。
+本站是纯静态站点，正文只在这里维护一份，站点首页会自动同步。各平台客户端的配置步骤见 [iOS 上手教程](guides/ios-proxy-setup.html)。
