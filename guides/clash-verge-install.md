@@ -4,6 +4,8 @@ title: "Clash Verge 下载与安装教程：Windows 与 macOS 分别怎么装（
 description: "Clash Verge Rev 去哪里下载、Windows 与 macOS 该选哪个安装包、Apple 芯片和 Intel 怎么区分、首次打开被系统拦截怎么处理，以及安装完成后需要先做哪些初始设置。"
 ---
 
+[← 返回首页：线路资费与实测记录](../index.html)
+
 # Clash Verge 下载与安装：Windows 与 macOS 分别怎么装
 
 一句话结论：**只从官方仓库的 Release 页面下载，Windows 选 `x64` 安装包，macOS 必须先分清 Apple 芯片和 Intel 芯片。** 装完之后不要急着导入订阅，先把初始设置过一遍。

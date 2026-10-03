@@ -4,6 +4,8 @@ title: "Hysteria2 和 Vless 有什么区别？AnyTLS 又该怎么选（2026 对�
 description: "Hysteria2 走 UDP（QUIC），Vless 走 TCP，AnyTLS 则基于 TLS 做流量特征伪装，三者的适用场景并不相同。本文从抗封锁、弱网表现、延迟稳定性、资源开销四个维度对比，并给出按网络环境选择协议与遇到 UDP 被限制时的处理办法。"
 ---
 
+[← 返回首页：线路资费与实测记录](../index.html)
+
 # Hysteria2、Vless、AnyTLS：代理协议到底该选哪个
 
 一句话结论：**网络质量差、丢包多的时候 Hysteria2 通常更稳；网络本身正常、但怀疑被 QoS 限速或用不了 UDP 时，Vless 这类基于 TCP 的协议更可靠；AnyTLS 则适合在协议特征容易被识别时当备用。** 最实际的做法是几种都留着，按当下的网络环境切换。

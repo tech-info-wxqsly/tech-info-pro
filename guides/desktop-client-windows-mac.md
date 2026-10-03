@@ -4,6 +4,8 @@ title: "电脑端科学上网客户端对比：Windows 与 macOS 该选哪个（
 description: "Windows 和 macOS 能用的代理客户端并不完全相同，Mac 上还要区分 Intel 与 Apple 芯片。本文对比两个平台的常见客户端、系统代理与 TUN 模式的差别，以及各自最容易踩的坑与选型建议。"
 ---
 
+[← 返回首页：线路资费与实测记录](../index.html)
+
 # 电脑端科学上网客户端对比：Windows 与 macOS 该选哪个
 
 一句话结论：**两个平台的首选都是 Clash Verge Rev，它同时支持系统代理与 TUN 模式、能直接导入订阅；区别在于 macOS 上还有 Stash 这类付费但更省心的选择。**
