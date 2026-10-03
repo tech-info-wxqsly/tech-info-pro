@@ -1,0 +1,89 @@
+name: 链接有效性巡检
+
+on:
+  schedule:
+    # 每周一 北京时间 09:00（UTC 01:00）
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查正文中的推广链接
+        id: check
+        run: |
+          set +e
+          python3 tools/link_watch.py --summary-file link-summary.txt > link-report.txt 2>&1
+          code=$?
+          set -e
+          cat link-report.txt
+          if [ "$code" = "10" ]; then
+            echo "failed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 记录到 issue（长期留档）
+        if: steps.check.outputs.failed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          existing=$(gh issue list --state open --search "链接失效提醒 in:title" --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file link-report.txt
+          else
+            gh issue create \
+              --title "链接失效提醒（$(date -u +%Y-%m-%d)）" \
+              --body-file link-report.txt
+          fi
+
+      - name: 发送手机提醒
+        if: steps.check.outputs.failed == 'true'
+        env:
+          SMS_WEBHOOK_URL: ${{ secrets.SMS_WEBHOOK_URL }}
+          SMSBAO_USER: ${{ secrets.SMSBAO_USER }}
+          SMSBAO_PASS: ${{ secrets.SMSBAO_PASS }}
+          BARK_KEY: ${{ secrets.BARK_KEY }}
+          ALERT_PHONE: ${{ secrets.ALERT_PHONE }}
+        run: |
+          body=$(cat link-summary.txt 2>/dev/null || echo "站点链接巡检发现异常，详情见仓库 issue。")
+          sent=""
+
+          # 渠道一：通用 webhook，POST {title, body}，适合自建或第三方转发网关
+          if [ -n "$SMS_WEBHOOK_URL" ]; then
+            payload=$(jq -n --arg t "站点链接告警" --arg b "$body" '{title:$t, body:$b}')
+            if curl -fsS -X POST "$SMS_WEBHOOK_URL" -H 'Content-Type: application/json' -d "$payload"; then
+              sent="webhook"
+            fi
+
+          # 渠道二：短信宝，GET 调用，返回 0 表示提交成功
+          elif [ -n "$SMSBAO_USER" ] && [ -n "$SMSBAO_PASS" ] && [ -n "$ALERT_PHONE" ]; then
+            p=$(printf '%s' "$SMSBAO_PASS" | md5sum | awk '{print $1}')
+            resp=$(curl -fsS --get \
+              --data-urlencode "u=$SMSBAO_USER" \
+              --data-urlencode "p=$p" \
+              --data-urlencode "m=$ALERT_PHONE" \
+              --data-urlencode "c=$body" \
+              "https://api.smsbao.com/sms" || true)
+            echo "短信服务返回码：$resp"
+            if [ "$resp" = "0" ]; then sent="smsbao"; fi
+
+          # 渠道三：Bark，iOS 推送，免费且无需短信通道
+          elif [ -n "$BARK_KEY" ]; then
+            payload=$(jq -n --arg t "站点链接告警" --arg b "$body" '{title:$t, body:$b}')
+            if curl -fsS -X POST "https://api.day.app/$BARK_KEY" -H 'Content-Type: application/json' -d "$payload"; then
+              sent="bark"
+            fi
+          fi
+
+          if [ -z "$sent" ]; then
+            echo "::warning::尚未配置任何手机提醒渠道（SMS_WEBHOOK_URL / 短信宝 / BARK_KEY），本次仅记录到 issue。"
+          else
+            echo "已通过 $sent 发送手机提醒。"
+          fi

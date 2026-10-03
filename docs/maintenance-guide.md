@@ -28,6 +28,8 @@
 | `.github/workflows/site-health.yml` | 每 30 分钟巡检证书与站点可用性 | 极低 |
 | `tools/price_watch.py` | 资费抓取与比对的脚本 | 加线路时改 |
 | `data/price-snapshot.json` | 上一次抓到的资费快照，用于比对 | 由工作流自动更新 |
+| `.github/workflows/link-watch.yml` | 每周检查正文里的推广链接是否失效，失效时发手机提醒 | 极低 |
+| `tools/link_watch.py` | 链接检查脚本，链接来源是 `README.md` | 极低 |
 
 ## 三、日常改动怎么做
 
@@ -81,6 +83,41 @@ DNS 生效后，GitHub 会自动签发并续期 Let's Encrypt 证书。证书签
 | --- | --- | --- | --- |
 | 资费巡检 | 每天 09:00 | 抓取魔戒与 KTM 的官方套餐接口，和 `data/price-snapshot.json` 比对 | 只有出现调价、改名、上下架时才开 issue 提醒；无变化完全静默 |
 | 站点与证书巡检 | 每 30 分钟 | 探测 `http://` 与 `https://tech-info.top/`，证书就绪后自动尝试开启 Enforce HTTPS | 证书就绪时提醒一次；站点连续不可访问时开 issue，恢复后自动关闭 |
+| 链接有效性巡检 | 每周一 09:00 | 从 `README.md` 里提取全部外部推广链接逐个访问，判定"正常 / 警告 / 失效" | 只有出现确认失效的链接时才开 issue 并发送手机提醒 |
+
+### 链接巡检的判定口径
+
+| 情况 | 判定 | 是否提醒 |
+| --- | --- | --- |
+| 返回 2xx / 3xx | 正常 | 否 |
+| 返回 401 / 403 / 429 | 警告（通常是机房 IP 被防护拦截） | 只在 issue 里记录 |
+| 其它 4xx / 5xx | 失效 | 是 |
+| 连接失败、超时、证书错误 | 失效 | 是 |
+
+每个链接会重试两次再判定，避免偶发网络抖动造成误报。检查对象直接从 `README.md` 提取，所以将来在正文里新增或更换链接，无需改脚本就会自动纳入检查。
+
+### 手机提醒渠道怎么配
+
+提醒渠道按下面的顺序自动选择，**配了哪个用哪个**，一个都没配时只记录到 issue：
+
+| 渠道 | 需要配置的仓库 Secret | 说明 |
+| --- | --- | --- |
+| 通用 Webhook | `SMS_WEBHOOK_URL` | 向该地址 POST `{title, body}` JSON，可对接自建网关或第三方转发服务 |
+| 短信宝 | `SMSBAO_USER`、`SMSBAO_PASS`、`ALERT_PHONE` | 国内个人可注册的短信服务，按条计费，内容需符合其模板规范 |
+| Bark | `BARK_KEY` | iOS 推送，装 App 后免费获取 key，不需要短信通道 |
+
+配置方式：仓库 `Settings` → `Secrets and variables` → `Actions` → `New repository secret`。短信内容由脚本自动生成，形如：
+
+```
+站点链接告警：共 1 个推广链接异常，首个是 https://example.com/register?aff=xxx。详情见仓库 issue。
+```
+
+想在本机手动跑一次链接检查：
+
+```powershell
+cd D:\project\tech-info\jichang
+python tools\link_watch.py
+```
 
 提醒以仓库 issue 的形式发出，GitHub 会按你的通知设置推送邮件。资费巡检在提醒的同时会把快照更新掉，所以同一次调价只会提醒一次，不会天天刷。
 
