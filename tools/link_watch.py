@@ -34,6 +34,11 @@ UA = "Mozilla/5.0 (compatible; link-watch/1.0; +https://tech-info.top/)"
 WARN_STATUS = {401, 403, 429}
 RETRIES = 2
 
+# Windows 终端默认 GBK，中文日志会报错，统一切到 UTF-8
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 
 def extract_links() -> list[str]:
     found: list[str] = []

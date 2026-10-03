@@ -43,6 +43,8 @@ git commit -m "update content"
 git push
 ```
 
+注意 `main` 已开启分支保护（见第十节）：直接推送仍然可以（管理员在放行名单里），但 `git push --force` 和删除分支会被拒绝。
+
 内容类改动集中在两处：
 
 * **调整线路信息**：改 `README.md` 里的表格，名称、链接、资费、适用人群都在表格行里。站点首页会通过 `index.md` 自动引用同一份内容，不需要改两遍。
@@ -108,7 +110,7 @@ DNS 生效后，GitHub 会自动签发并续期 Let's Encrypt 证书。证书签
 | 3 | 钉钉机器人 | `DINGTALK_WEBHOOK`（如需加签再加 `DINGTALK_SECRET`） | 同上，适合已经在用钉钉的情况 |
 | 4 | 飞书机器人 | `FEISHU_WEBHOOK` | 同上 |
 | 5 | Telegram | `TELEGRAM_BOT_TOKEN`、`TELEGRAM_CHAT_ID` | 需要手机能访问 Telegram |
-| 6 | ntfy | `NTFY_TOPIC`（可选 `NTFY_SERVER`） | 开源推送，安卓有官方 App，也可以自建服务端 |
+| 6 | ntfy | `NTFY_TOPIC`（可选 `NTFY_SERVER`、`NTFY_TOKEN`） | 开源推送，安卓有官方 App，也可以自建服务端。公共 ntfy.sh 上 topic 名就是唯一凭证，短于 20 位会被脚本直接跳过 |
 | 7 | 通用 Webhook | `SMS_WEBHOOK_URL` | 向该地址 POST `{title, body}` JSON，可对接自建网关或转发服务 |
 
 配置方式：仓库 `Settings` → `Secrets and variables` → `Actions` → `New repository secret`。短信内容由脚本自动生成，形如：
@@ -136,6 +138,16 @@ python tools\price_watch.py --report        # 打印当前完整资费
 python tools\price_watch.py --check         # 只比对，有变动时退出码为 10
 python tools\price_watch.py --write-snapshot # 把当前资费记为新的比对基准
 ```
+
+### 资费抓取的证书指纹
+
+魔戒的官方接口是「IP + 自签证书」，没法做域名校验，所以 `tools/price_watch.py` 里改成了固定证书指纹：`SOURCES["mojie"]["cert_sha256"]`。每次抓取会比对实际指纹，对不上就中止，**不会**把数据写进快照。
+
+这是必要的——抓到的数据会被工作流自动提交回仓库并展示在 issue 里，如果放任跳过校验，中间人篡改的假资费会直接变成站点内容。
+
+指纹当前固定于 2026-10-04，对应证书有效期到 2026-12-07。对方换证书后巡检会失败，报错里会同时打印「期望」和「实际」两个指纹，确认实际值没问题就把常量改成新的即可。这个失败是刻意设计的：宁可漏报一次，也不能把来路不明的数据写进仓库。（自测试：把指纹改成全 0，`--check` 会立即中止并给出实际指纹。）
+
+另外脚本在写入快照前会做完整性校验：任一线路解析不出套餐、价格不是数字、价格超出 0–100000 元、流量数值异常，都会中止并返回退出码 2，同样不落盘。
 
 ## 七、本机开发环境备注
 
@@ -190,3 +202,40 @@ git config --global https.proxy http://127.0.0.1:7890
 * GitHub Pages 在大陆的访问质量受线路影响，偶发打不开属于网络波动，可以用备用域名或备用解析缓解。
 * 仓库是公开的，所有人都能看到里面的推广链接与文案。别把私密信息、后台地址、账号密码写进仓库。
 * 站点每隔一段时间要体检：首页与教程页能否打开、推广链接是否还能跳转、资费是否已经变化。失效信息挂着比不写更伤信任。
+
+## 十、安全基线与分支保护
+
+前提：仓库是公开的，**所有文件、所有历史提交、所有 Actions 运行日志任何人都能看**。所以「不在仓库里出现」比「事后删掉」重要得多。
+
+### 分支保护
+
+`main` 上有两条 ruleset，同时生效：
+
+| 名称 | 规则 | 放行名单 |
+| --- | --- | --- |
+| 保护 main：禁止强推与删除 | 禁止 force push、禁止删除分支 | 无，管理员同样受限 |
+| main 需要 PR | 改动必须经 Pull Request 合入 | 管理员角色与 GitHub Actions 应用 |
+
+这样设计的原因：仓库曾经被强推重写过一次历史，那类操作必须从根上堵死，所以第一条不设任何放行；而日常改内容和资费巡检的自动提交都是直接推 `main`，所以第二条给管理员和 Actions 应用留了通道，不影响现有流程。非管理员协作者从此只能提 PR。
+
+查看与调整：仓库 `Settings` → `Rules` → `Rulesets`。
+
+### 凭证与日志
+
+* 所有凭证只放仓库 Secrets（`Settings` → `Secrets and variables` → `Actions`），一律不写进文件。
+* `tools/notify.py` 失败时只打印渠道名与 HTTP 状态码，不打印请求 URL、请求参数和响应体——那些位置带着 webhook key、bot token 和短信接口的密码哈希，而公开仓库的日志人人可看。新加渠道请沿用 `safe_reason()`。
+* 公共 ntfy.sh 上 topic 名就是唯一凭证，脚本会拒绝发送长度不足 20 位的 topic 并打印 warning，改用长随机串或自建服务端 + `NTFY_TOKEN`。
+
+### 密钥泄露后的正确顺序
+
+**先轮换凭证，再清理文件。** 重写历史不等于删除：实测被 force push 掉的提交仍能通过 `https://api.github.com/repos/tech-info-wxqsly/tech-info-pro/commits/<sha>` 访问到。任何已经推上去的密钥都应当视为永久泄露，必须作废重发。
+
+### 不提交清单
+
+`.gitignore` 已覆盖 `__pycache__/`、`*.py[cod]`、`.env`、`venv/`、`.venv/` 以及巡检脚本运行时的临时报告（`price-report.txt`、`link-report.txt`、`link-summary.txt`）。
+
+`tools/__pycache__/link_watch.cpython-312.pyc` 曾经被误提交，已从仓库移除：`.pyc` 会把编译时的本机绝对路径写进文件，实测内容里带着 `D:\project\tech-info\jichang\tools/link_watch.py`。这类文件既暴露本机目录结构，又会在源码改动后残留旧常量。
+
+### 第三方 Action
+
+`.github/workflows/seo-ping.yml` 使用的 `bojieyang/indexnow-action` 已从 `@v3` 改为固定 commit SHA（`38ddfbd`）。上游 tag 被移动或仓库被入侵时，固定 SHA 能挡住拿本仓库密钥执行任意代码。将来升级版本时，去上游仓库取新版本对应的 commit SHA 再替换。

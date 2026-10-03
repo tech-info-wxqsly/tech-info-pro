@@ -6,12 +6,16 @@ on:
     - cron: '0 23 * * *'
   workflow_dispatch: # 也可以在 Actions 页面手动点按钮
 
+permissions:
+  contents: read
+
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
       - name: 提交有更新的页面
-        uses: bojieyang/indexnow-action@v3
+        # 固定到 v3 对应的 commit，避免上游 tag 被移动后拿着本仓库的密钥执行
+        uses: bojieyang/indexnow-action@38ddfbd93579a8a44c0dee662121bf9d51098f71
         with:
           sitemap-location: 'https://tech-info.top/sitemap.xml'
           key: ${{ secrets.INDEXNOW_KEY }}

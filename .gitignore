@@ -9,3 +9,19 @@ Gemfile.lock
 Thumbs.db
 .vscode/
 .idea/
+
+# Python 运行产物（.pyc 里会写入本机绝对路径，不要提交）
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 本地凭证与环境变量，一律不进仓库
+.env
+.env.*
+*.local
+
+# 巡检脚本运行时写出的临时报告
+price-report.txt
+link-report.txt
+link-summary.txt

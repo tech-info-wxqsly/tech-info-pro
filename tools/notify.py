@@ -11,10 +11,14 @@
     3. 钉钉机器人      DINGTALK_WEBHOOK（+ 可选 DINGTALK_SECRET）
     4. 飞书机器人      FEISHU_WEBHOOK
     5. Telegram      TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID
-    6. ntfy          NTFY_TOPIC（+ 可选 NTFY_SERVER）
+    6. ntfy          NTFY_TOPIC（+ 可选 NTFY_SERVER、NTFY_TOKEN）
     7. 通用 Webhook   SMS_WEBHOOK_URL                             POST {title, body}
 
 所有凭证都从环境变量读取，工作流里通过仓库 Secrets 注入。
+
+安全约定：仓库是公开的，Actions 日志任何人都能看，因此出错时只输出渠道名
+与 HTTP 状态码，绝不把请求 URL、请求参数或响应体写进日志——这些位置会带上
+webhook key、bot token 与短信接口的密码哈希。新增渠道时请沿用同样的写法。
 """
 
 from __future__ import annotations
@@ -35,6 +39,22 @@ import urllib.request
 TITLE = "站点链接告警"
 UA = "notify/1.0 (+https://tech-info.top/)"
 CTX = ssl.create_default_context()
+# 公共 ntfy.sh 上 topic 名就是唯一的凭证，太短等于把告警内容公开
+NTFY_PUBLIC_MIN_TOPIC = 20
+
+# Windows 终端默认 GBK，中文日志会报错，统一切到 UTF-8
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
+
+def safe_reason(exc: BaseException) -> str:
+    """把异常压成不含 URL 与请求参数的短描述，供日志输出。"""
+    if isinstance(exc, urllib.error.HTTPError):
+        return "HTTP %s" % exc.code
+    if isinstance(exc, urllib.error.URLError):
+        return "URLError（网络不可达或被拦截）"
+    return type(exc).__name__
 
 
 def post(url: str, payload: dict, headers: dict | None = None) -> tuple[bool, str]:
@@ -47,10 +67,8 @@ def post(url: str, payload: dict, headers: dict | None = None) -> tuple[bool, st
         with urllib.request.urlopen(req, timeout=25, context=CTX) as resp:
             body = resp.read().decode("utf-8", "replace")
             return 200 <= resp.getcode() < 300, body[:400]
-    except urllib.error.HTTPError as exc:
-        return False, "HTTP %s %s" % (exc.code, exc.read().decode("utf-8", "replace")[:200])
     except Exception as exc:
-        return False, "%s: %s" % (type(exc).__name__, exc)
+        return False, safe_reason(exc)
 
 
 def get(url: str) -> tuple[bool, str]:
@@ -59,7 +77,7 @@ def get(url: str) -> tuple[bool, str]:
         with urllib.request.urlopen(req, timeout=25, context=CTX) as resp:
             return 200 <= resp.getcode() < 300, resp.read().decode("utf-8", "replace")[:400]
     except Exception as exc:
-        return False, "%s: %s" % (type(exc).__name__, exc)
+        return False, safe_reason(exc)
 
 
 def send_smsbao(text: str) -> tuple[bool, str]:
@@ -134,17 +152,29 @@ def send_telegram(text: str) -> tuple[bool, str]:
 def send_ntfy(text: str) -> tuple[bool, str]:
     server = os.environ.get("NTFY_SERVER", "https://ntfy.sh").rstrip("/")
     topic = os.environ["NTFY_TOPIC"]
+    headers = {"Title": TITLE.encode("utf-8").decode("latin-1"), "User-Agent": UA}
+    token = os.environ.get("NTFY_TOKEN", "")
+    if token:
+        headers["Authorization"] = "Bearer " + token
     req = urllib.request.Request(
         "%s/%s" % (server, topic),
         data=text.encode("utf-8"),
-        headers={"Title": TITLE.encode("utf-8").decode("latin-1"), "User-Agent": UA},
+        headers=headers,
         method="POST",
     )
     try:
         with urllib.request.urlopen(req, timeout=25, context=CTX) as resp:
             return 200 <= resp.getcode() < 300, resp.read().decode("utf-8", "replace")[:200]
     except Exception as exc:
-        return False, "%s: %s" % (type(exc).__name__, exc)
+        return False, safe_reason(exc)
+
+
+def ntfy_topic_too_weak() -> bool:
+    """公共 ntfy.sh 上 topic 名就是凭证，短串会被猜到并读取全部告警。"""
+    server = os.environ.get("NTFY_SERVER", "https://ntfy.sh").rstrip("/")
+    if server != "https://ntfy.sh":
+        return False
+    return len(os.environ.get("NTFY_TOPIC", "")) < NTFY_PUBLIC_MIN_TOPIC
 
 
 def send_generic_webhook(text: str) -> tuple[bool, str]:
@@ -179,6 +209,13 @@ def main() -> int:
 
     for name, required, sender in CHANNELS:
         if not all(os.environ.get(key) for key in required):
+            continue
+        if name == "ntfy" and ntfy_topic_too_weak():
+            print(
+                "::warning::ntfy topic 不足 %d 位，公共 ntfy.sh 上任何人猜到就能订阅全部告警，"
+                "本次跳过该渠道。请换成长随机串，或改用自建服务端并配置 NTFY_TOKEN。"
+                % NTFY_PUBLIC_MIN_TOPIC
+            )
             continue
         ok, detail = sender(text)
         if ok:
