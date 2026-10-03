@@ -3,10 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iPhone 想用代理：先借电脑过渡，再换原生客户端（图文实操）</title>
-<meta name="description" content="国内 App Store 上架不了 Shadowrocket，很多 iPhone 用户因此卡在死循环里。本文给出两条可选路线：先用电脑做跳板让手机立刻能上网，再准备自备美区账号安装原生客户端，附客户端挑选建议与常见问题排查。">
-<meta name="keywords" content="iPhone代理设置,手机WiFi代理,允许局域网连接,美区Apple ID,Shadowrocket替代,Clash Verge,FlClash,手机翻墙教程">
+<title>iPhone 翻墙教程 2026：不装 Shadowrocket 也能先科学上网（Windows / Mac 双平台）</title>
+<meta name="description" content="国内 App Store 上架不了 Shadowrocket，很多 iPhone 用户因此卡在死循环里。本文给出两条可选路线：先用电脑做跳板让手机立刻能科学上网，再准备自备美区账号安装原生翻墙客户端，附客户端挑选建议与常见问题排查。">
+<meta name="keywords" content="iPhone翻墙教程,iPhone科学上网,手机WiFi代理,允许局域网连接,美区Apple ID,Shadowrocket替代,小火箭替代,Clash Verge,FlClash">
+<meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://tech-info.top/guides/ios-proxy-setup.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="科学上网线路实测笔记">
+<meta property="og:title" content="iPhone 翻墙教程：不装 Shadowrocket 也能先科学上网">
+<meta property="og:description" content="先用电脑做跳板让 iPhone 立刻能科学上网，再准备自备美区账号安装原生翻墙客户端，附客户端挑选建议与常见问题排查。">
+<meta property="og:url" content="https://tech-info.top/guides/ios-proxy-setup.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iPhone 翻墙教程：不装 Shadowrocket 也能先科学上网">
+<meta name="twitter:description" content="先用电脑做跳板让 iPhone 立刻能科学上网，再准备自备美区账号安装原生翻墙客户端。">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "iPhone 翻墙教程：先借电脑过渡，再换原生客户端",
+      "description": "国内 App Store 上架不了 Shadowrocket，本文给出两条路线：先用电脑做跳板让手机立刻能科学上网，再准备自备美区账号安装原生客户端。",
+      "inLanguage": "zh-CN",
+      "mainEntityOfPage": "https://tech-info.top/guides/ios-proxy-setup.html",
+      "author": { "@type": "Organization", "name": "科学上网线路实测笔记" },
+      "publisher": { "@type": "Organization", "name": "科学上网线路实测笔记" },
+      "dateModified": "2026-10-03"
+    },
+    {
+      "@type": "HowTo",
+      "name": "iPhone 借电脑搭桥先科学上网",
+      "totalTime": "PT10M",
+      "step": [
+        { "@type": "HowToStep", "name": "打开客户端局域网共享", "text": "在 Clash Verge、FlClash 等客户端设置里打开允许局域网连接（Allow LAN），记下混合端口号，默认通常是 7890。" },
+        { "@type": "HowToStep", "name": "查出电脑内网地址", "text": "Windows 执行 ipconfig、macOS 在网络设置里查看，记下无线网卡的 IPv4 地址。" },
+        { "@type": "HowToStep", "name": "手机 WiFi 填手动代理", "text": "iPhone 设置 → 无线局域网 → 当前 WiFi 的 ⓘ → 配置代理改为手动，填刚才的地址与端口。" },
+        { "@type": "HowToStep", "name": "验证是否生效", "text": "用手机浏览器打开任意境外站点，能打开即为成功。" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "订阅导进去了，但节点一个都测不通？",
+          "acceptedAnswer": { "@type": "Answer", "text": "先在客户端点一次更新订阅，多数商家的节点列表每天都会变；仍不行就检查设备时间是否准确，时间偏差过大会直接导致 TLS 握手失败。" }
+        },
+        {
+          "@type": "Question",
+          "name": "代理连上了，个别 App 还是打不开？",
+          "acceptedAnswer": { "@type": "Answer", "text": "把模式从规则临时切成全局验证：全局能用、规则不能用，就是分流规则没覆盖到该域名，更新规则集或手动补一条即可。" }
+        },
+        {
+          "@type": "Question",
+          "name": "电脑关机之后手机还能用吗？",
+          "acceptedAnswer": { "@type": "Answer", "text": "借电脑搭桥的方式不能，手机用的是电脑的网络；在手机上装好原生客户端之后就可以脱离电脑独立使用。" }
+        },
+        {
+          "@type": "Question",
+          "name": "为什么要先买最小档的套餐？",
+          "acceptedAnswer": { "@type": "Answer", "text": "线路体验与本地运营商、地区和时段关系很大，先用小额套餐跑几天晚高峰，再决定是否续长期，最省钱也最不容易踩坑。" }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://tech-info.top/" },
+        { "@type": "ListItem", "position": 2, "name": "iPhone 翻墙教程", "item": "https://tech-info.top/guides/ios-proxy-setup.html" }
+      ]
+    }
+  ]
+}
+</script>
 <style>
   :root {
     --text: #1f2328;
@@ -75,9 +145,9 @@ var _hmt = _hmt || [];
 <body>
 <main>
 
-<h1>iPhone 想用代理：先借电脑过渡，再换原生客户端</h1>
+<h1>iPhone 翻墙教程：先用电脑搭桥，再换原生客户端</h1>
 
-<p class="lead">两条路线按顺序走：先让手机今天就上网，再把长期方案装上。</p>
+<p class="lead">两条路线按顺序走：先让手机当天就能科学上网，再把长期方案装到手机上。</p>
 
 <blockquote>
   <p>路线一是<strong>过渡方案</strong>：手机不装任何软件，借用电脑的网络出口，适合临时应急。<br>
