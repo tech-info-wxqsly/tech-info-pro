@@ -1,0 +1,87 @@
+name: 站点与证书巡检
+
+on:
+  schedule:
+    # 每 30 分钟检查一次
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pages: write
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 探测 HTTP / HTTPS
+        id: probe
+        run: |
+          # curl 连接失败时 -w 会输出 000，不要再补一次 echo，否则会变成 000000
+          http=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 http://tech-info.top/ || true)
+          https=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://tech-info.top/ || true)
+          http=${http:-000}
+          https=${https:-000}
+          echo "http=$http" >> "$GITHUB_OUTPUT"
+          echo "https=$https" >> "$GITHUB_OUTPUT"
+          echo "HTTP=$http HTTPS=$https"
+
+      - name: 证书就绪后尝试开启 HTTPS 强制跳转
+        id: enforce
+        if: steps.probe.outputs.https == '200'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          current=$(gh api "repos/${{ github.repository }}/pages" --jq '.https_enforced')
+          if [ "$current" = "true" ]; then
+            echo "state=already" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if gh api -X PUT "repos/${{ github.repository }}/pages" -F https_enforced=true > /dev/null 2>&1; then
+            echo "state=done" >> "$GITHUB_OUTPUT"
+          else
+            echo "state=denied" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 通知（只在状态变化时发一次）
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          https="${{ steps.probe.outputs.https }}"
+          http="${{ steps.probe.outputs.http }}"
+          state="${{ steps.enforce.outputs.state }}"
+
+          # 站点恢复正常：关掉之前的异常提醒
+          if [ "$http" = "200" ]; then
+            open=$(gh issue list --state open --search "站点不可访问 in:title" --json number --jq '.[0].number')
+            if [ -n "$open" ]; then gh issue close "$open" --comment "站点已恢复访问。"; fi
+          fi
+
+          # HTTPS 就绪：只通知一次
+          if [ "$https" = "200" ]; then
+            seen=$(gh issue list --state all --search "HTTPS 已就绪 in:title" --json number --jq 'length')
+            if [ "$seen" = "0" ]; then
+              if [ "$state" = "done" ]; then
+                body="证书已签发，并且已自动开启 Enforce HTTPS，HTTP 会 301 跳转到 HTTPS。"
+              elif [ "$state" = "already" ]; then
+                body="证书已签发，Enforce HTTPS 此前已开启。"
+              else
+                body="证书已签发，但自动开启 Enforce HTTPS 被拒绝（工作流令牌权限不足）。请到仓库 Settings → Pages 手动勾选 Enforce HTTPS。"
+              fi
+              gh issue create --title "HTTPS 已就绪：tech-info.top" --body "$body"
+            fi
+          fi
+
+          # 站点连续不可访问：开一条提醒，恢复时自动关闭
+          if [ "$http" != "200" ] && [ "$https" != "200" ]; then
+            open=$(gh issue list --state open --search "站点不可访问 in:title" --json number --jq '.[0].number')
+            if [ -z "$open" ]; then
+              gh issue create \
+                --title "站点不可访问（$(date -u +%Y-%m-%d %H:%M UTC)）" \
+                --body "巡检发现 tech-info.top 的 HTTP 与 HTTPS 都无法访问，HTTP=$http HTTPS=$https。请检查 DNS 解析与 GitHub Pages 构建状态。"
+            fi
+          fi

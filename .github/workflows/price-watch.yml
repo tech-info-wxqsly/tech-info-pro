@@ -1,0 +1,70 @@
+name: 资费巡检
+
+on:
+  schedule:
+    # 每天北京时间 09:00（UTC 01:00）巡检一次
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+    inputs:
+      force_report:
+        description: 强制输出一份当前资费报告（用于测试通知链路）
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 抓取官方资费并与快照比对
+        id: check
+        run: |
+          if [ "${{ inputs.force_report }}" = "true" ]; then
+            python3 tools/price_watch.py --report > price-report.txt 2>&1 || true
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            set +e
+            python3 tools/price_watch.py --check > price-report.txt 2>&1
+            code=$?
+            set -e
+            if [ "$code" = "10" ]; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            elif [ "$code" != "0" ]; then
+              echo "抓取官方接口失败，请稍后重试：" >> price-report.txt
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+          cat price-report.txt
+
+      - name: 更新快照并提交
+        if: steps.check.outputs.changed == 'true' && inputs.force_report != true
+        run: |
+          python3 tools/price_watch.py --write-snapshot
+          if git diff --quiet data/price-snapshot.json; then
+            echo "快照无变化，跳过提交"
+          else
+            git config user.name "price-watch"
+            git config user.email "price-watch@users.noreply.github.com"
+            git add data/price-snapshot.json
+            git commit -m "chore: 更新资费快照（$(date -u +%Y-%m-%d)）"
+            git push
+          fi
+
+      - name: 提醒（有变动时才发）
+        if: steps.check.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing=$(gh issue list --state open --search "资费变动提醒 in:title" --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file price-report.txt
+          else
+            gh issue create \
+              --title "资费变动提醒（$(date -u +%Y-%m-%d)）" \
+              --body-file price-report.txt
+          fi

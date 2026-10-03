@@ -1,0 +1,22 @@
+name: 搜索引擎收录提交
+
+on:
+  schedule:
+    # 每天北京时间 07:00（UTC 23:00）自动跑一次
+    - cron: '0 23 * * *'
+  workflow_dispatch: # 也可以在 Actions 页面手动点按钮
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 提交有更新的页面
+        uses: bojieyang/indexnow-action@v3
+        with:
+          sitemap-location: 'https://tech-info.top/sitemap.xml'
+          key: ${{ secrets.INDEXNOW_KEY }}
+          # 站点不在域名根目录时，需要显式告诉本 action key 文件的位置
+          key-location: ${{ secrets.INDEXNOW_KEY_LOCATION }}
+          # 只提交 lastmod 在最近 1 天内的页面
+          since: 1
+          since-unit: 'day'

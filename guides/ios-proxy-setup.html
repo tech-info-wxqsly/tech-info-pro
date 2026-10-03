@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iPhone 想用代理：先借电脑过渡，再换原生客户端（图文实操）</title>
+<meta name="description" content="国内 App Store 上架不了 Shadowrocket，很多 iPhone 用户因此卡在死循环里。本文给出两条可选路线：先用电脑做跳板让手机立刻能上网，再准备自备美区账号安装原生客户端，附客户端挑选建议与常见问题排查。">
+<meta name="keywords" content="iPhone代理设置,手机WiFi代理,允许局域网连接,美区Apple ID,Shadowrocket替代,Clash Verge,FlClash,手机翻墙教程">
+<link rel="canonical" href="https://tech-info.top/guides/ios-proxy-setup.html">
+<style>
+  :root {
+    --text: #1f2328;
+    --muted: #59636e;
+    --line: #d1d9e0;
+    --soft: #f6f8fa;
+    --accent: #0969da;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0 16px 64px;
+    color: var(--text);
+    background: #fff;
+    font: 16px/1.75 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  main { max-width: 820px; margin: 0 auto; }
+  h1 { font-size: 28px; line-height: 1.4; margin: 40px 0 16px; }
+  h2 {
+    font-size: 22px; margin: 44px 0 12px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  h3 { font-size: 18px; margin: 26px 0 8px; }
+  a { color: var(--accent); }
+  code {
+    background: var(--soft); padding: 2px 6px; border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 14px;
+  }
+  blockquote {
+    margin: 20px 0; padding: 12px 18px; border-left: 4px solid var(--accent);
+    background: var(--soft); border-radius: 0 8px 8px 0;
+  }
+  blockquote p { margin: 0; }
+  ol, ul { padding-left: 22px; }
+  li { margin: 6px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 15px; }
+  th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; }
+  th { background: var(--soft); font-weight: 600; }
+  .lead { color: var(--muted); }
+  .box {
+    background: var(--soft); border: 1px solid var(--line); border-radius: 10px;
+    padding: 4px 20px 16px; margin: 18px 0;
+  }
+  .warn {
+    border-left: 4px solid #d4a72c; background: #fff8e5;
+    padding: 12px 18px; border-radius: 0 8px 8px 0; margin: 18px 0;
+  }
+  .warn p { margin: 0; }
+  footer {
+    max-width: 820px; margin: 48px auto 0; padding-top: 20px;
+    border-top: 1px solid var(--line); color: var(--muted); font-size: 14px;
+  }
+</style>
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?33f0985307224a569066e3f43db2bb22";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+<body>
+<main>
+
+<h1>iPhone 想用代理：先借电脑过渡，再换原生客户端</h1>
+
+<p class="lead">两条路线按顺序走：先让手机今天就上网，再把长期方案装上。</p>
+
+<blockquote>
+  <p>路线一是<strong>过渡方案</strong>：手机不装任何软件，借用电脑的网络出口，适合临时应急。<br>
+  路线二是<strong>长期方案</strong>：准备一个自己的美区 Apple ID，把原生客户端装进手机，之后不再依赖电脑。</p>
+</blockquote>
+
+<h2>一、路线一：让电脑做跳板（手机端零安装）</h2>
+
+<p>做法本身不复杂：电脑上的代理客户端打开「允许局域网连接」之后，会在本机开放一个代理端口（常见是 <code>7890</code>）。把手机和电脑接在同一个 WiFi 下，再让手机的 WiFi 走手动代理指向电脑的内网地址，手机的流量就从电脑那边出去了。</p>
+
+<h3>第一步：打开客户端的局域网共享开关</h3>
+
+<div class="box">
+<p>Clash Verge、FlClash、Mihomo 这一类客户端，设置里都有一个 <strong>允许局域网连接（Allow LAN）</strong> 的开关，打开它。同时留意「混合端口 / Mixed Port」的数值，默认多为 <code>7890</code>，下面手机上要填的就是这个端口。</p>
+</div>
+
+<h3>第二步：查出电脑在局域网里的地址</h3>
+
+<ul>
+  <li><strong>Windows</strong>：按 <code>Win + R</code>，输入 <code>cmd</code> 回车，执行 <code>ipconfig</code>，在无线网卡那一段找到 <code>IPv4 地址</code>，形如 <code>192.168.1.23</code>。</li>
+  <li><strong>Mac</strong>：系统设置 → 网络 → 选中当前 WiFi → 详细信息，里面能看到 IP 地址。</li>
+</ul>
+
+<h3>第三步：在手机的 WiFi 设置里填代理</h3>
+
+<ol>
+  <li>iPhone 打开「设置 → 无线局域网」，点当前 WiFi 右侧的 ⓘ 图标。</li>
+  <li>滑到最底部找到「配置代理」，切换成<strong>手动</strong>。</li>
+  <li>服务器一栏填电脑的内网地址，端口填刚才记下的那个端口，保存。</li>
+  <li>用手机浏览器打开任意境外站点，能打开就说明通了。</li>
+</ol>
+
+<h3>连不上时的排查顺序</h3>
+
+<div class="warn">
+<p>先确认手机和电脑在同一个网段（IP 前三段一致）；再检查 Windows 防火墙有没有拦掉这个端口的入站连接；如果是在酒店、商场或公司 WiFi 下，这类网络经常开了 AP 隔离，设备之间互相看不见——换成手机开热点、让电脑连热点，再走一遍上面的步骤通常就通了。</p>
+</div>
+
+<h2>二、路线二：装原生客户端（需要一个自备的美区 Apple ID）</h2>
+
+<p>想长期在手机上用，还是得装一个原生客户端。这类工具在国内区 App Store 已经下架，所以需要一个<strong>属于你自己的</strong>美区账号。不建议购买共享账号：随时可能被锁，还可能牵连到自己的设备。</p>
+
+<h3>第一步：注册属于你自己的美区账号</h3>
+
+<div class="box">
+<ol>
+  <li>浏览器打开 <code>account.apple.com</code>，注册时国家/地区选择 <strong>United States</strong>。</li>
+  <li>账单地址建议填免税州（Oregon、Delaware 都可以），省掉后续可能的税费。</li>
+  <li>付款方式选 <strong>None / 无</strong>。如果看不到这个选项，通常是地址或地区信息填得不合规，回头核对一遍即可。</li>
+  <li>用来注册的邮箱建议单独准备一个，不要用主力设备绑定的那个主账号邮箱。</li>
+</ol>
+</div>
+
+<h3>第二步：切换商店账号并下载</h3>
+
+<div class="box">
+<ol>
+  <li>iPhone 打开「设置 → 顶部 Apple 账户 → 媒体与购买项目」，退出当前账号，登录刚注册好的美区账号。</li>
+  <li>打开 App Store 搜索并安装你选定的客户端（下一节有对比）。</li>
+  <li>装完可以切回自己的常用账号，已装的 App 不会被删除，但<strong>以后更新时要重新登录美区账号</strong>。</li>
+</ol>
+</div>
+
+<h2>三、客户端怎么选</h2>
+
+<p>价格会随 App Store 区域和促销活动变动，下表只作为大致参考，以商店实际显示为准。</p>
+
+<table>
+  <thead>
+    <tr><th>客户端</th><th>大致价格</th><th>特点</th><th>适合谁</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Shadowrocket</td>
+      <td>约 $2.99 买断</td>
+      <td>协议支持最全，规则与分流配置资料最多，教程一搜一大把</td>
+      <td>想要省心、不想折腾配置的大多数人</td>
+    </tr>
+    <tr>
+      <td>Stash</td>
+      <td>约 $3.99 起</td>
+      <td>界面现代，兼容 Clash 配置，订阅与规则管理清晰</td>
+      <td>同时有 iPhone 和 Mac，想用同一套配置</td>
+    </tr>
+    <tr>
+      <td>Quantumult X</td>
+      <td>约 $7.99</td>
+      <td>脚本与重写能力最强，可玩性高</td>
+      <td>愿意自己写规则、调脚本的进阶用户</td>
+    </tr>
+    <tr>
+      <td>sing-box</td>
+      <td>免费（TestFlight 或自签）</td>
+      <td>开源内核，配置自由度最高，但没有开箱即用的图形界面</td>
+      <td>懂技术、愿意自己折腾配置文件的用户</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>四、桌面端和安卓端用什么</h2>
+
+<ul>
+  <li><strong>Windows</strong>：Clash Verge Rev、FlClash、Mihomo Party，都支持订阅导入与规则分流。</li>
+  <li><strong>macOS</strong>：Clash Verge Rev、Stash，或者付费的 Surge。</li>
+  <li><strong>Android</strong>：FlClash、Clash Meta for Android、v2rayNG。</li>
+</ul>
+
+<p>桌面端和手机端用的是同一份订阅链接，导入方式各家略有差别，基本都在「订阅 / Profile」页面里粘贴。</p>
+
+<h2>五、几个高频问题</h2>
+
+<h3>订阅导进去了，但节点一个都测不通？</h3>
+<p>先在客户端里点一次「更新订阅」，多数商家的节点列表每天都会变。还不行就检查设备时间是否准确——时间偏差过大会直接导致 TLS 握手失败，这一条经常被忽略。</p>
+
+<h3>代理明明连上了，个别 App 还是打不开？</h3>
+<p>大概率是分流规则没有覆盖到。把模式从「规则」临时切成「全局」验证：全局能用、规则不能用，就是规则集的问题，更新规则或手动补一条即可。</p>
+
+<h3>电脑关机之后手机还能用吗？</h3>
+<p>路线一不行，那种方式本来就是借电脑的网络。走完路线二、手机上装好原生客户端之后，就可以脱离电脑独立使用了。</p>
+
+<h3>为什么要先买最小档的套餐？</h3>
+<p>线路体验和本地运营商、所在地区、使用时段关系很大，别人说快不代表你这边快。先用小额套餐跑几天晚高峰，再决定要不要续长期，这样最省钱。</p>
+
+<h2>六、使用须知</h2>
+
+<ul>
+  <li>请遵守所在地的法律法规以及相关服务条款，把工具用在正当的信息获取用途上。</li>
+  <li>不要从第三方渠道购买来历不明的账号或订阅，存在账号被收回和信息泄露的风险。</li>
+  <li>线路都可能出现波动，建议至少保留一条备用线路，并定期更新订阅与客户端版本。</li>
+  <li>本文只讲操作方法与排查思路，不构成对任何具体服务的推荐或担保。</li>
+</ul>
+
+<p><a href="../index.html">← 回到首页：线路实测记录与资费</a></p>
+
+</main>
+
+<footer>
+  <p>最后更新：2026 年。客户端版本和服务商策略变化较快，页面内容会随之修订。</p>
+</footer>
+
+</body>
+</html>
