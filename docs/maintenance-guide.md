@@ -43,7 +43,7 @@ git commit -m "update content"
 git push
 ```
 
-注意 `main` 已开启分支保护（见第十节）：直接推送仍然可以（管理员在放行名单里），但 `git push --force` 和删除分支会被拒绝。
+注意 `main` 已开启分支保护（见第十节）：普通推送不受影响，但 `git push --force` 和删除分支会被拒绝，这条对所有人有效、没有例外。
 
 内容类改动集中在两处：
 
@@ -209,16 +209,21 @@ git config --global https.proxy http://127.0.0.1:7890
 
 ### 分支保护
 
-`main` 上有两条 ruleset，同时生效：
+`main` 上有一条 ruleset：**「保护 main：禁止强推与删除」**，规则是禁止 force push 与禁止删除分支，**放行名单为空**——也就是管理员同样受限，包括你和我，谁都推不掉这个分支的历史。设置它的直接原因是仓库曾经被强推重写过一次历史。
 
-| 名称 | 规则 | 放行名单 |
-| --- | --- | --- |
-| 保护 main：禁止强推与删除 | 禁止 force push、禁止删除分支 | 无，管理员同样受限 |
-| main 需要 PR | 改动必须经 Pull Request 合入 | 管理员角色与 GitHub Actions 应用 |
+查看与调整：仓库 `Settings` → `Rules` → `Rulesets`；命令行核对：
 
-这样设计的原因：仓库曾经被强推重写过一次历史，那类操作必须从根上堵死，所以第一条不设任何放行；而日常改内容和资费巡检的自动提交都是直接推 `main`，所以第二条给管理员和 Actions 应用留了通道，不影响现有流程。非管理员协作者从此只能提 PR。
+```powershell
+gh api repos/tech-info-wxqsly/tech-info-pro/rulesets
+gh api repos/tech-info-wxqsly/tech-info-pro/branches/main --jq .protected
+```
 
-查看与调整：仓库 `Settings` → `Rules` → `Rulesets`。
+**为什么没有再加「必须走 PR」那一条。** GitHub 个人账号下的仓库不允许把 GitHub Actions 应用加入 ruleset 放行名单，API 会直接返回 422（`Actor GitHub Actions integration must be part of the ruleset source or owner organization`）。而资费巡检每天都要用 `GITHUB_TOKEN` 把快照直接推回 `main`，一旦开启 PR 要求，这条自动提交就会被拒，巡检从此天天失败。所以只保留了不会误伤自动化的那一条。
+
+将来如果确实想让 `main` 的每次改动都经 PR：
+
+1. 先把 `price-watch.yml` 的「更新快照并提交」改成开分支 + `gh pr create`，由你手动合并；
+2. 再到 Rulesets 新增一条 `pull_request` 规则，放行名单里只留你自己的账号（`actor_type: User`，个人账号可用，只有 GitHub Actions 应用不行）。
 
 ### 凭证与日志
 
