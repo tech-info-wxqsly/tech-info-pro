@@ -65,6 +65,17 @@
 
 ---
 
+## 深入阅读：常见问题的详细教程
+
+上面是结论，下面是每个具体问题展开的完整步骤，按你需要的那一篇点进去即可：
+
+* **[Clash Verge 订阅导入教程](guides/clash-verge-subscribe.html)** —— Windows / macOS 从安装到分流规则，导入订阅的三种方式与导入后没反应的排查顺序。
+* **[小火箭订阅导入失败排查](guides/shadowrocket-subscribe-troubleshooting.html)** —— 先把"导不进去"和"导进去连不上"分开，再按原因逐条解决。
+* **[电脑端科学上网：Windows 与 macOS 怎么选客户端](guides/desktop-client-windows-mac.html)** —— 两个平台的客户端对比、系统代理与 TUN 模式的差别、各自容易踩的坑。
+* **[机场套餐怎么选](guides/plan-choosing-guide.html)** —— 一次性买断、月付大流量、IEPL 专线三种计费模型的单 GB 成本算法与四个容易吃亏的细节。
+* **[美区 Apple ID 注册避坑](guides/us-apple-id-register.html)** —— 从注册到装上客户端，付款方式选 None 的做法与常见报错处理。
+* **[iPhone 翻墙教程（图文实操）](guides/ios-proxy-setup.html)** —— 不装 Shadowrocket 也能先让手机上网，再换原生客户端。
+
 ## 常见问题
 
 ### 科学上网、翻墙、机场、VPN，这几个词是一回事吗？

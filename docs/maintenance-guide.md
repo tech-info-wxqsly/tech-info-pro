@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | `index.md` | 站点首页，用 `include_relative` 引入 `README.md`，本身不含正文 | 极低 |
 | `README.md` | 正文唯一来源，同时是站点首页内容与仓库首页展示内容 | 高 |
-| `guides/ios-proxy-setup.html` | iOS 上手教程，独立 HTML 页 | 低 |
+| `guides/` | 教程与长尾文章目录：`ios-proxy-setup.html` 是独立 HTML 页，其余 `.md` 由 Jekyll 渲染 | 中 |
 | `404.html` | 访问不存在路径时的提示页 | 极低 |
 | `_config.yml` | 站点标题、SEO 描述、站点地址 | 发布时改一次 |
 | `CNAME` | 自定义域名声明文件，内容固定为域名本身 | 换域名时改 |
