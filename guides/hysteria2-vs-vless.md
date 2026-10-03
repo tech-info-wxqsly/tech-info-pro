@@ -1,12 +1,12 @@
 ---
 layout: default
-title: "Hysteria2 和 Vless 有什么区别？该选哪个协议（2026 对比）"
-description: "Hysteria2 走 UDP（QUIC），Vless 走 TCP，两者的适用场景并不相同。本文从抗封锁、弱网表现、延迟稳定性、资源开销四个维度对比，并给出按网络环境选择协议与遇到 UDP 被限制时的处理办法。"
+title: "Hysteria2 和 Vless 有什么区别？AnyTLS 又该怎么选（2026 对比）"
+description: "Hysteria2 走 UDP（QUIC），Vless 走 TCP，AnyTLS 则基于 TLS 做流量特征伪装，三者的适用场景并不相同。本文从抗封锁、弱网表现、延迟稳定性、资源开销四个维度对比，并给出按网络环境选择协议与遇到 UDP 被限制时的处理办法。"
 ---
 
-# Hysteria2 和 Vless 有什么区别，该选哪个
+# Hysteria2、Vless、AnyTLS：代理协议到底该选哪个
 
-一句话结论：**网络质量差、丢包多的时候 Hysteria2 通常更稳；网络本身正常、但怀疑被 QoS 限速或用不了 UDP 时，Vless 这类基于 TCP 的协议更可靠。** 最实际的做法是两种都留着。
+一句话结论：**网络质量差、丢包多的时候 Hysteria2 通常更稳；网络本身正常、但怀疑被 QoS 限速或用不了 UDP 时，Vless 这类基于 TCP 的协议更可靠；AnyTLS 则适合在协议特征容易被识别时当备用。** 最实际的做法是几种都留着，按当下的网络环境切换。
 
 ## 一、根本差异：走 UDP 还是走 TCP
 
@@ -60,7 +60,7 @@ description: "Hysteria2 走 UDP（QUIC），Vless 走 TCP，两者的适用场�
 | 刚开始很快，几分钟后掉速 | 拥塞控制被运营商干预，换 TCP 类协议试试 |
 | 所有协议都慢、但只在国内网站慢 | 与协议无关，是本地网络本身的问题 |
 
-导入与节点切换的具体操作见 [Clash Verge 订阅导入教程](clash-verge-subscribe.html)；如果所有节点同时失效，请先看[机场突然用不了该怎么排查](proxy-down-diagnosis.html)。
+导入与节点切换的具体操作见 [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)；如果所有节点同时失效，请先看[机场突然用不了怎么排查](proxy-down-diagnosis.html)。
 
 <script type="application/ld+json">
 {
@@ -88,7 +88,7 @@ description: "Hysteria2 走 UDP（QUIC），Vless 走 TCP，两者的适用场�
 
 ## 相关阅读
 
-* [Clash Verge 订阅导入教程：从安装到分流规则](clash-verge-subscribe.html)
-* [机场突然用不了：怎么区分被封锁和线路维护](proxy-down-diagnosis.html)
-* [机场套餐怎么选：流量不清零与月付大流量的取舍](plan-choosing-guide.html)
+* [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)
+* [机场突然用不了怎么排查](proxy-down-diagnosis.html)
+* [机场套餐怎么选](plan-choosing-guide.html)
 * [返回首页：线路资费与实测记录](../index.html)

@@ -1,10 +1,12 @@
-# 2026 机场推荐实测：科学上网线路的资费、速度与避坑记录
+# 2026 机场推荐实测：科学上网线路的资费、稳定性与避坑记录
+
+这里记录我长期在用的几条线路：官方实时标价、适合的人群，以及各平台客户端的配置与排查教程。先给结论，再按需要点进对应的那一篇。
 
 > **iPhone 用户建议先看这篇。** 国内 App Store 上架不了 Shadowrocket 这类客户端，于是很多人卡在「想翻墙得先有客户端，想下客户端又得先能翻墙」这个循环里。其实只要手边有一台能正常上网的电脑，几分钟就能绕过去：
 >
 > 👉 **[电脑搭桥让 iPhone 先联网，再去美区装客户端](guides/ios-proxy-setup.html)**
 
-> 下面几条线路是我自己长期在用的，写出来的是实际观察到的状态和官方实时标价，不是招商文案。机场调价很频繁，下单前建议再核对一次官方价目页。
+> 下面的标价整理自各家官方套餐页，链接是推广入口；机场调价很频繁，下单前建议再核对一次官方价目页。
 
 ## 先按用量习惯选，而不是按名气选
 
@@ -38,10 +40,12 @@
 | 计费方式 | 月付 / 季付 / 半年 / 年付，另有一次买断的永久套餐 |
 | 大流量系列 | ¥13.98 / 月 / 1024G ｜ ¥41.94 / 季 ｜ ¥139.8 / 年；2048G 版本 ¥27.96 / 月 |
 | IEPL 专线系列 | ¥10 / 月 / 45G ｜ ¥20 / 月 / 100G ｜ ¥30 / 月 / 200G ｜ ¥60 / 月 / 400G |
-| 永久套餐 | ¥198 / 1024G ｜ ¥398 / 1024G ｜ ¥499 / 150G（IEPL） |
+| 一次性买断 | ¥198 / 1024G ｜ ¥398 / 1024G（永久）｜ ¥499 / 150G（IEPL 永久）|
 | 官方价目 | [完整套餐表](https://url.ktm001.vip/#/plan) |
 | 协议与客户端 | Hysteria2，全平台客户端可用，官方推荐 Clash Verge 与 Shadowrocket |
 | 适合谁 | 经常看 4K、需要下载大文件，或几个人共用一条线路 |
+
+> 关于两个 1024G：¥198 的套餐名是「至尊套餐」，¥398 的是「至尊套餐（永久）」，两者含义不同，下单前在套餐详情里再确认一次更稳妥。
 
 ---
 
@@ -72,21 +76,21 @@
 **装客户端**
 
 * **[Clash Verge 下载与安装教程](guides/clash-verge-install.html)** —— Windows 与 macOS 分别选哪个安装包、Apple 芯片怎么区分、首次打开被拦截怎么处理。
-* **[Clash Verge 订阅导入教程](guides/clash-verge-subscribe.html)** —— 导入订阅的三种方式、节点测速、规则与全局的区别，以及导入后没反应的排查顺序。
-* **[电脑端科学上网：Windows 与 macOS 怎么选客户端](guides/desktop-client-windows-mac.html)** —— 两个平台的客户端对比、系统代理与 TUN 模式的差别、各自容易踩的坑。
+* **[Clash Verge 订阅导入与分流教程](guides/clash-verge-subscribe.html)** —— 导入订阅的三种方式、节点测速、规则与全局的区别，以及导入后没反应的排查顺序。
+* **[电脑端科学上网客户端对比：Windows 与 macOS](guides/desktop-client-windows-mac.html)** —— 两个平台的客户端对比、系统代理与 TUN 模式的差别、各自容易踩的坑。
+* **[美区 Apple ID 注册避坑](guides/us-apple-id-register.html)** —— 从注册到装上客户端，付款方式选 None 的做法与常见报错处理。
+* **[iPhone 翻墙教程](guides/ios-proxy-setup.html)** —— 先用电脑搭桥让手机当天能上网，再换原生客户端，附 Windows、macOS 与 Android 端的选择建议。
 
-**管账号与订阅**
+**选套餐与协议**
+
+* **[机场套餐怎么选](guides/plan-choosing-guide.html)** —— 一次性买断、月付大流量、IEPL 专线三类计费模型的单 GB 成本算法与四个容易吃亏的细节。
+* **[Hysteria2 与 Vless 协议怎么选](guides/hysteria2-vs-vless.html)** —— 两种协议在弱网、UDP 受限等场景下的差异，以及 AnyTLS 什么时候值得用。
+
+**订阅管理与故障排查**
 
 * **[机场订阅链接怎么获取与备份](guides/subscription-link-guide.html)** —— 链接在哪里找、为什么它等同于账号密码、泄露了怎么处理、日常检查清单。
-* **[机场套餐怎么选](guides/plan-choosing-guide.html)** —— 一次性买断、月付大流量、IEPL 专线三种计费模型的单 GB 成本算法与四个容易吃亏的细节。
-* **[美区 Apple ID 注册避坑](guides/us-apple-id-register.html)** —— 从注册到装上客户端，付款方式选 None 的做法与常见报错处理。
-
-**出问题的时候**
-
 * **[小火箭订阅导入失败排查](guides/shadowrocket-subscribe-troubleshooting.html)** —— 先把"导不进去"和"导进去连不上"分开，再按原因逐条解决。
-* **[机场突然用不了：怎么区分封锁和线路维护](guides/proxy-down-diagnosis.html)** —— 一张现象对照表加五分钟自检流程，判断问题出在机场侧还是你这边。
-* **[Hysteria2 和 Vless 有什么区别，该选哪个](guides/hysteria2-vs-vless.html)** —— 按网络环境选择协议，以及 UDP 被限制时怎么绕过。
-* **[iPhone 翻墙教程（图文实操）](guides/ios-proxy-setup.html)** —— 不装 Shadowrocket 也能先让手机上网，再换原生客户端。
+* **[机场突然用不了怎么排查](guides/proxy-down-diagnosis.html)** —— 一张现象对照表加五分钟自检流程，判断问题出在机场侧还是你这边。
 
 ## 常见问题
 
@@ -118,4 +122,4 @@
 
 ## 关于本页
 
-本站是纯静态站点，正文只在这里维护一份，站点首页会自动同步。各平台客户端的配置步骤见 [iOS 上手教程](guides/ios-proxy-setup.html)。
+上面的资费整理自各家官方套餐页，标价与套餐随时可能调整，请以官网为准；页面中的推广链接会带有跟踪参数。各平台的客户端配置步骤见上文「深入阅读」，iOS 用户的完整上手路线见 [iPhone 翻墙教程](guides/ios-proxy-setup.html)。

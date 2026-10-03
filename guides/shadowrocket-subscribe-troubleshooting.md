@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "小火箭 Shadowrocket 订阅导入失败？常见原因与排查顺序"
+title: "小火箭 Shadowrocket 订阅导入失败或连不上？常见原因与排查顺序"
 description: "Shadowrocket 订阅导不进去、导入后节点测不通、更新订阅报错，原因各不相同。本文把问题分成导入失败与连接失败两类，给出可以直接照做的排查顺序，并说明什么时候该切回美区账号更新客户端。"
 ---
 
-# 小火箭订阅导入失败排查：先分类，再按顺序试
+# 小火箭订阅导入失败或连不上：先分类，再按顺序试
 
 一句话结论：**先分清是"订阅没导进来"还是"导进来了但连不上"，这两类问题的原因几乎不重叠**。混在一起瞎试，只会越试越乱。
 
-## 第一步：判断你属于哪一类
+## 第一节：判断你属于哪一类
 
 | 现象 | 属于哪类 | 跳到 |
 | --- | --- | --- |
@@ -36,7 +36,7 @@ description: "Shadowrocket 订阅导不进去、导入后节点测不通、更�
 
 **5. 客户端版本过旧。**
 
-Shadowrocket 对较新的协议（例如 Hysteria2、AnyTLS）支持依赖版本更新。如果你很久没更新过客户端，先更新再试。注意从 App Store 更新需要切回当初购买时使用的美区账号，切回主账号是更新不了的，原因见[美区 Apple ID 注册与使用说明](us-apple-id-register.html)。
+Shadowrocket 对较新的协议（例如 Hysteria2、AnyTLS）支持依赖版本更新。如果你很久没更新过客户端，先更新再试。注意从 App Store 更新需要切回当初购买时使用的美区账号，切回主账号是更新不了的，原因见[美区 Apple ID 注册避坑](us-apple-id-register.html)。
 
 ## 第三节：导入成功但连不上
 
@@ -63,9 +63,9 @@ Shadowrocket 对较新的协议（例如 Hysteria2、AnyTLS）支持依赖版本
 3. 在订阅设置里把自动更新打开，间隔设为 24 小时左右，之后就不用天天手动点。
 4. 如果更新持续失败，删掉订阅重新添加一次，比反复更新更有效。
 
-## 第五节：还有一件事值得检查
+## 第五节：浏览器能开、某个 App 不行
 
-如果你在浏览器里能打开境外网站，但某个特定 App 始终不行，那不是订阅问题，而是分流规则或 App 自身的网络实现绕过代理。处理办法是把客户端模式临时切到全局验证一次，确认是规则问题后再补规则，具体思路见 [Clash Verge 订阅导入与分流说明](clash-verge-subscribe.html)。
+如果你在浏览器里能打开境外网站，但某个特定 App 始终不行，那不是订阅问题，而是分流规则或 App 自身的网络实现绕过代理。处理办法是把客户端模式临时切到全局验证一次，确认是规则问题后再补规则，具体思路见 [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)。
 
 <script type="application/ld+json">
 {
@@ -93,8 +93,8 @@ Shadowrocket 对较新的协议（例如 Hysteria2、AnyTLS）支持依赖版本
 
 ## 相关阅读
 
-* [Clash Verge 订阅导入教程](clash-verge-subscribe.html)
-* [美区 Apple ID 注册避坑：从零到装上客户端](us-apple-id-register.html)
-* [机场突然用不了：怎么区分被封锁和线路维护](proxy-down-diagnosis.html)
-* [机场套餐怎么选：流量不清零与月付大流量的取舍](plan-choosing-guide.html)
+* [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)
+* [美区 Apple ID 注册避坑](us-apple-id-register.html)
+* [机场突然用不了怎么排查](proxy-down-diagnosis.html)
+* [机场套餐怎么选](plan-choosing-guide.html)
 * [返回首页：线路资费与实测记录](../index.html)

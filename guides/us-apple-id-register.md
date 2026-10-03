@@ -4,7 +4,7 @@ title: "美区 Apple ID 注册教程与避坑：从零到装上 iOS 客户端"
 description: "想下载 Shadowrocket 这类客户端，就需要一个自己的美区 Apple ID。本文给出完整注册步骤、付款方式选 None 的正确做法、常见报错的处理方式，并说明为什么不要把别人的账号登进 iCloud。"
 ---
 
-# 美区 Apple ID 注册：从零到装上 iOS 客户端
+# 美区 Apple ID 注册避坑：从零到装上 iOS 客户端
 
 一句话结论：**注册一个属于自己的美区账号，只把它登录在 App Store 的「媒体与购买项目」里，绝不要登进 iCloud。** 这是既省事又安全的分界线。
 
@@ -74,7 +74,7 @@ description: "想下载 Shadowrocket 这类客户端，就需要一个自己的�
 
 **给账号开启双重认证。** 自己注册的账号同样需要保护，尤其是它已经绑定了你的设备。开了双重认证之后，即使密码泄露也不容易被盗用。
 
-如果下载好客户端之后卡在订阅导入环节，排查思路见[小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)；教程里的两条路线也可以先看[首页的说明](../index.html)。
+如果下载好客户端之后卡在订阅导入环节，排查思路见[小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)；手机端从借电脑搭桥到装上客户端的完整路线见 [iPhone 翻墙教程](ios-proxy-setup.html)。
 
 <script type="application/ld+json">
 {
@@ -102,7 +102,8 @@ description: "想下载 Shadowrocket 这类客户端，就需要一个自己的�
 
 ## 相关阅读
 
-* [小火箭订阅导入失败排查：常见原因与解决顺序](shadowrocket-subscribe-troubleshooting.html)
-* [Clash Verge 订阅导入教程](clash-verge-subscribe.html)
-* [机场套餐怎么选：流量不清零与月付大流量的取舍](plan-choosing-guide.html)
+* [iPhone 翻墙教程](ios-proxy-setup.html)
+* [小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)
+* [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)
+* [机场套餐怎么选](plan-choosing-guide.html)
 * [返回首页：线路资费与实测记录](../index.html)

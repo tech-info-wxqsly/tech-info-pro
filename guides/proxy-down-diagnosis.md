@@ -63,7 +63,7 @@ description: "节点全部超时、只有部分节点挂掉、连得上却打不
 
 换之前建议先用新服务商的最小档测试几天晚高峰，确认速度满意再迁移，避免从一个坑跳进另一个坑。选购思路见[机场套餐怎么选](plan-choosing-guide.html)。
 
-日常的使用习惯也值得整理一下：订阅链接怎么备份、泄露了怎么处理，见[订阅链接管理说明](subscription-link-guide.html)；客户端侧的排查步骤见[小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)。
+日常的使用习惯也值得整理一下：订阅链接怎么备份、泄露了怎么处理，见[机场订阅链接怎么获取与备份](subscription-link-guide.html)；客户端侧的排查步骤见[小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)。
 
 <script type="application/ld+json">
 {
@@ -91,7 +91,7 @@ description: "节点全部超时、只有部分节点挂掉、连得上却打不
 
 ## 相关阅读
 
-* [Hysteria2 和 Vless 有什么区别，该选哪个](hysteria2-vs-vless.html)
+* [Hysteria2 与 Vless 协议怎么选](hysteria2-vs-vless.html)
 * [小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)
 * [机场订阅链接怎么获取与备份](subscription-link-guide.html)
 * [返回首页：线路资费与实测记录](../index.html)

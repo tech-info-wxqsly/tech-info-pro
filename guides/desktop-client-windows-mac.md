@@ -1,10 +1,10 @@
 ---
 layout: default
-title: "电脑端科学上网客户端怎么选：Windows 与 macOS 对比（2026）"
+title: "电脑端科学上网客户端对比：Windows 与 macOS 该选哪个（2026）"
 description: "Windows 和 macOS 能用的代理客户端并不完全相同，Mac 上还要区分 Intel 与 Apple 芯片。本文对比两个平台的常见客户端、系统代理与 TUN 模式的差别，以及各自最容易踩的坑与选型建议。"
 ---
 
-# 电脑端科学上网：Windows 与 macOS 该用哪个客户端
+# 电脑端科学上网客户端对比：Windows 与 macOS 该选哪个
 
 一句话结论：**两个平台的首选都是 Clash Verge Rev，它同时支持系统代理与 TUN 模式、能直接导入订阅；区别在于 macOS 上还有 Stash 这类付费但更省心的选择。**
 
@@ -36,6 +36,8 @@ Windows 侧的常见问题是权限与拦截：开启 TUN 模式需要安装服�
 1. **下载时要选对架构**。Apple 芯片（M 系列）与 Intel 芯片的安装包不同，装错了要么打不开，要么性能异常。不确定就看「关于本机」。
 2. **首次运行会被 Gatekeeper 拦截**。到「系统设置 → 隐私与安全性」里放行，TUN 模式还需要额外授权网络扩展，授权后一般需要重启一次客户端。
 
+这两点的详细操作步骤见 [Clash Verge 下载与安装教程](clash-verge-install.html)。
+
 另外，Surge 不直接吃 Clash 的配置，订阅需要走转换或使用 Surge 专用订阅地址；如果你手里的机场只提供 Clash 订阅，选 Stash 或 Clash Verge Rev 更省事。
 
 ## 系统代理和 TUN 模式，到底选哪个
@@ -56,7 +58,7 @@ Windows 侧的常见问题是权限与拦截：开启 TUN 模式需要安装服�
 * **时间不准确**。系统时间偏差会影响 TLS 握手，表现为所有节点超时，检查一下并不费事。
 * **订阅要定期更新**。节点列表每天都在变，把自动更新打开能省掉一大半"突然用不了"的问题。
 
-具体到导入步骤，见 [Clash Verge 订阅导入教程](clash-verge-subscribe.html)；如果导入后连不上，排查顺序见[小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)，手机端的思路是一致的。
+具体到导入步骤，见 [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)；如果导入后连不上，排查顺序见[小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)，手机端的思路是一致的。
 
 <script type="application/ld+json">
 {
@@ -84,7 +86,8 @@ Windows 侧的常见问题是权限与拦截：开启 TUN 模式需要安装服�
 
 ## 相关阅读
 
-* [Clash Verge 订阅导入教程](clash-verge-subscribe.html)
+* [Clash Verge 下载与安装教程](clash-verge-install.html)
+* [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)
 * [小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)
-* [机场套餐怎么选：流量不清零与月付大流量的取舍](plan-choosing-guide.html)
+* [机场套餐怎么选](plan-choosing-guide.html)
 * [返回首页：线路资费与实测记录](../index.html)

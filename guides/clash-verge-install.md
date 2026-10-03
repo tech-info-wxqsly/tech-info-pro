@@ -63,7 +63,7 @@ Clash Verge 目前维护得最活跃的版本叫 **Clash Verge Rev**，代码和
 
 **想彻底卸载**：Windows 在卸载程序里正常卸载，并删除用户目录下的配置文件夹；macOS 拖出应用程序后，顺手删除 `~/Library/Application Support` 下的配置目录，否则重装会沿用旧配置。
 
-装好之后下一步是导入订阅，具体有三种导入方式和对应的排查顺序，见 [Clash Verge 订阅导入教程](clash-verge-subscribe.html)。
+装好之后下一步是导入订阅，具体有三种导入方式和对应的排查顺序，见 [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)。
 
 <script type="application/ld+json">
 {
@@ -91,7 +91,7 @@ Clash Verge 目前维护得最活跃的版本叫 **Clash Verge Rev**，代码和
 
 ## 相关阅读
 
-* [Clash Verge 订阅导入教程：从安装到分流规则](clash-verge-subscribe.html)
-* [电脑端科学上网：Windows 与 macOS 该选哪个客户端](desktop-client-windows-mac.html)
+* [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)
+* [电脑端科学上网客户端对比：Windows 与 macOS](desktop-client-windows-mac.html)
 * [机场订阅链接怎么获取与备份](subscription-link-guide.html)
 * [返回首页：线路资费与实测记录](../index.html)

@@ -1,6 +1,6 @@
 title: "科学上网线路实测笔记"
 tagline: "翻墙机场推荐、资费对比与客户端配置"
-description: "2026 年机场推荐与科学上网教程：长期自用线路实测记录，覆盖一次买断流量不清零、大流量套餐与 IEPL 专线三类方案，并附 Windows、macOS、iOS、Android 翻墙客户端配置与避坑指南。"
+description: "2026 年机场推荐与科学上网教程：长期自用线路实测记录，覆盖一次买断、月付大流量与 IEPL 专线三类计费方案，并附 Windows、macOS 与 iOS 客户端的配置与避坑指南。"
 lang: "zh-CN"
 
 markdown: kramdown
@@ -8,6 +8,18 @@ markdown: kramdown
 # 站点地址。目前绑定自定义域名，baseurl 留空。
 url: "https://tech-info.top"
 baseurl: ""
+
+# 不随站点发布的目录与文件。
+# tools/ 是本地与 Actions 使用的巡检脚本，文档站不需要对外提供；
+# 其余是 Jekyll 默认排除项，写上是为了设置了 exclude 之后不被覆盖。
+exclude:
+  - tools/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - .sass-cache/
+  - .jekyll-cache/
 
 # 全站套用主题的居中排版
 defaults:
