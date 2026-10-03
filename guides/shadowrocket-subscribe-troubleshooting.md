@@ -95,5 +95,6 @@ Shadowrocket 对较新的协议（例如 Hysteria2、AnyTLS）支持依赖版本
 
 * [Clash Verge 订阅导入教程](clash-verge-subscribe.html)
 * [美区 Apple ID 注册避坑：从零到装上客户端](us-apple-id-register.html)
+* [机场突然用不了：怎么区分被封锁和线路维护](proxy-down-diagnosis.html)
 * [机场套餐怎么选：流量不清零与月付大流量的取舍](plan-choosing-guide.html)
 * [返回首页：线路资费与实测记录](../index.html)

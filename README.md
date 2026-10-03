@@ -69,11 +69,23 @@
 
 上面是结论，下面是每个具体问题展开的完整步骤，按你需要的那一篇点进去即可：
 
-* **[Clash Verge 订阅导入教程](guides/clash-verge-subscribe.html)** —— Windows / macOS 从安装到分流规则，导入订阅的三种方式与导入后没反应的排查顺序。
-* **[小火箭订阅导入失败排查](guides/shadowrocket-subscribe-troubleshooting.html)** —— 先把"导不进去"和"导进去连不上"分开，再按原因逐条解决。
+**装客户端**
+
+* **[Clash Verge 下载与安装教程](guides/clash-verge-install.html)** —— Windows 与 macOS 分别选哪个安装包、Apple 芯片怎么区分、首次打开被拦截怎么处理。
+* **[Clash Verge 订阅导入教程](guides/clash-verge-subscribe.html)** —— 导入订阅的三种方式、节点测速、规则与全局的区别，以及导入后没反应的排查顺序。
 * **[电脑端科学上网：Windows 与 macOS 怎么选客户端](guides/desktop-client-windows-mac.html)** —— 两个平台的客户端对比、系统代理与 TUN 模式的差别、各自容易踩的坑。
+
+**管账号与订阅**
+
+* **[机场订阅链接怎么获取与备份](guides/subscription-link-guide.html)** —— 链接在哪里找、为什么它等同于账号密码、泄露了怎么处理、日常检查清单。
 * **[机场套餐怎么选](guides/plan-choosing-guide.html)** —— 一次性买断、月付大流量、IEPL 专线三种计费模型的单 GB 成本算法与四个容易吃亏的细节。
 * **[美区 Apple ID 注册避坑](guides/us-apple-id-register.html)** —— 从注册到装上客户端，付款方式选 None 的做法与常见报错处理。
+
+**出问题的时候**
+
+* **[小火箭订阅导入失败排查](guides/shadowrocket-subscribe-troubleshooting.html)** —— 先把"导不进去"和"导进去连不上"分开，再按原因逐条解决。
+* **[机场突然用不了：怎么区分封锁和线路维护](guides/proxy-down-diagnosis.html)** —— 一张现象对照表加五分钟自检流程，判断问题出在机场侧还是你这边。
+* **[Hysteria2 和 Vless 有什么区别，该选哪个](guides/hysteria2-vs-vless.html)** —— 按网络环境选择协议，以及 UDP 被限制时怎么绕过。
 * **[iPhone 翻墙教程（图文实操）](guides/ios-proxy-setup.html)** —— 不装 Shadowrocket 也能先让手机上网，再换原生客户端。
 
 ## 常见问题

@@ -108,6 +108,8 @@ description: "Clash Verge 怎么导入机场订阅？按 Windows 与 macOS 分�
 ## 相关阅读
 
 * [小火箭订阅导入失败排查：常见原因与解决顺序](shadowrocket-subscribe-troubleshooting.html)
+* [Clash Verge 下载与安装：Windows 与 macOS 分别怎么装](clash-verge-install.html)
+* [机场订阅链接怎么获取与备份](subscription-link-guide.html)
 * [电脑端科学上网：Windows 与 macOS 该选哪个客户端](desktop-client-windows-mac.html)
 * [机场套餐怎么选：流量不清零与月付大流量的取舍](plan-choosing-guide.html)
 * [返回首页：线路资费与实测记录](../index.html)
