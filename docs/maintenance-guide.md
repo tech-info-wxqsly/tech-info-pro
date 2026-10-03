@@ -30,6 +30,7 @@
 | `data/price-snapshot.json` | 上一次抓到的资费快照，用于比对 | 由工作流自动更新 |
 | `.github/workflows/link-watch.yml` | 每周检查正文里的推广链接是否失效，失效时发手机提醒 | 极低 |
 | `tools/link_watch.py` | 链接检查脚本，链接来源是 `README.md` | 极低 |
+| `tools/notify.py` | 手机提醒推送脚本，支持多种渠道 | 加渠道时改 |
 
 ## 三、日常改动怎么做
 
@@ -98,13 +99,17 @@ DNS 生效后，GitHub 会自动签发并续期 Let's Encrypt 证书。证书签
 
 ### 手机提醒渠道怎么配
 
-提醒渠道按下面的顺序自动选择，**配了哪个用哪个**，一个都没配时只记录到 issue：
+提醒渠道按下面的顺序自动选择，**从上往下第一个配置完整的渠道会被使用**；一个都没配时只记录到 issue：
 
-| 渠道 | 需要配置的仓库 Secret | 说明 |
-| --- | --- | --- |
-| 通用 Webhook | `SMS_WEBHOOK_URL` | 向该地址 POST `{title, body}` JSON，可对接自建网关或第三方转发服务 |
-| 短信宝 | `SMSBAO_USER`、`SMSBAO_PASS`、`ALERT_PHONE` | 国内个人可注册的短信服务，按条计费，内容需符合其模板规范 |
-| Bark | `BARK_KEY` | iOS 推送，装 App 后免费获取 key，不需要短信通道 |
+| 顺序 | 渠道 | 需要配置的仓库 Secret | 说明 |
+| --- | --- | --- | --- |
+| 1 | 短信宝 | `SMSBAO_USER`、`SMSBAO_PASS`、`ALERT_PHONE` | 真实短信，国内个人可注册，按条计费，内容需符合其模板规范 |
+| 2 | 企业微信机器人 | `WECHAT_WORK_WEBHOOK` | 群机器人 Webhook，安卓装企业微信即可收到推送，无需短信通道，配置最快 |
+| 3 | 钉钉机器人 | `DINGTALK_WEBHOOK`（如需加签再加 `DINGTALK_SECRET`） | 同上，适合已经在用钉钉的情况 |
+| 4 | 飞书机器人 | `FEISHU_WEBHOOK` | 同上 |
+| 5 | Telegram | `TELEGRAM_BOT_TOKEN`、`TELEGRAM_CHAT_ID` | 需要手机能访问 Telegram |
+| 6 | ntfy | `NTFY_TOPIC`（可选 `NTFY_SERVER`） | 开源推送，安卓有官方 App，也可以自建服务端 |
+| 7 | 通用 Webhook | `SMS_WEBHOOK_URL` | 向该地址 POST `{title, body}` JSON，可对接自建网关或转发服务 |
 
 配置方式：仓库 `Settings` → `Secrets and variables` → `Actions` → `New repository secret`。短信内容由脚本自动生成，形如：
 
