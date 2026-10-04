@@ -40,10 +40,12 @@ tools/                   巡检与自检脚本（不随站点发布）
 
 ### 加一个品牌
 
-1. 在 `_data/brands.yml` 加一段（`slug` / `vertical` / `aff` / `price_rows` / …）；
+1. 在 `_data/brands.yml` 加一段（`slug` / `vertical` / `order` / `aff` /
+   `price_rows` / …），其中 **`order` 必须写**：栏目页用 `sort: "order"`
+   排品牌卡片，缺了字段排序就退化成不定序，本地和线上可能不一致；
 2. 建品牌页 `<vertical>/<slug>/index.md`，`layout` 与 `brand` 由 `_config.yml`
    的 front matter 默认值自动套上，正文只写实测内容；
-3. 需要的话在 `_data/verticals.yml` 里加新栏目。
+3. 需要的话在 `_data/verticals.yml` 里加新栏目（同样带 `order`）。
 
 首页卡片、栏目页品牌列表、顶部导航、面包屑、sitemap 都会自动跟上，
 **不需要改任何模板**。
@@ -91,11 +93,33 @@ python tools/check_content.py         # 自检：front matter、站内链接、s
 
 ## 本地预览
 
-```bash
-# 需要 Ruby 与 jekyll（GitHub Pages 官方用 github-pages gem）
-gem install github-pages
-jekyll serve
+本地必须用**和线上同一个版本**的 Jekyll。线上 Pages 跑的是
+`github-pages v232`（jekyll 3.10.0）；如果本机是别的版本（比如一般版 Jekyll 4），
+它会放行 3.10 不认的写法，于是本地构建通过、推上去才炸。
+
+`Gemfile`、`Gemfile.lock`、`_config.local.yml` 与 `vendor/` 都只留本地、不进仓库
+（见 `.gitignore`），所以换机器要自己建一次 `Gemfile`：
+
+```ruby
+# Gemfile
+source "https://rubygems.org"
+gem "github-pages", "232", group: :jekyll_plugins
 ```
+
+```bash
+bundle config set --local path vendor/bundle
+bundle install
+bundle exec jekyll serve --config _config.yml,_config.local.yml   # 预览
+bundle exec jekyll build --config _config.yml,_config.local.yml   # 只构建
+```
+
+`gem "github-pages", group: :jekyll_plugins` 会让 Jekyll 自动带上 Pages 的白名单
+插件（jekyll-seo-tag 等），所以 `{% seo %}` 直接可用。`_config.local.yml` 只补
+线上构建服务有、gem 里没有的默认值（目前只有 `sass.style: compressed`，
+线上会把 `style.css` 压成单行）。
+
+改完模板/文章后，除了 `check_content.py`，建议再跑一次本地构建：
+本机版本已对齐线上，构建能过的，线上就能过。
 
 Windows 上如果没装 Ruby，也可以只跑上面几个 Python 脚本做内容自检，
 发布交给 GitHub Pages 构建。

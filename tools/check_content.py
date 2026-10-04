@@ -5,8 +5,9 @@
 2. 站内相对链接可达（不含外链）；
 3. sitemap.xml 与文件树一致（委托 tools/gen_sitemap.py --check）；
 4. Liquid 块标签配对、布局 front matter 完整；
-5. GitHub Pages（Jekyll 3.10）兼容性——本地是 Jekyll 4，它放行的写法
-   线上可能直接构建失败，只能静态挡一道。
+5. GitHub Pages（Jekyll 3.10）兼容性——CI 上不跑 Jekyll，这里静态挡一道，
+   把「只有推送后才会暴露」的构建失败提前到自检阶段；
+6. brands.yml 的品牌都带 order，否则栏目页卡片顺序会在本地/线上之间漂移。
 
 用法：
     python tools/check_content.py
@@ -47,12 +48,16 @@ LIQUID_TAG = re.compile(
 )
 LIQUID_OPENERS = {"if", "unless", "for", "case", "capture", "raw"}
 
-# 线上 GitHub Pages 是 Jekyll 3.10，与本地 Jekyll 4 有解析差异，见 check_jekyll3_compat()
+# GitHub Pages 线上是 Jekyll 3.10，见 check_jekyll3_compat()
 EXP_FILTER = re.compile(
     r"""\b(where_exp|find_exp|group_by_exp)\s*:\s*(?:"[^"]*"|'[^']*')\s*,\s*("[^"]*"|'[^']*')"""
 )
 BOOLEAN_OP = re.compile(r"\s(?:and|or)\s|&&|\|\|")
 JEKYLL4_ONLY_FILTER = re.compile(r"\|\s*(find|find_exp)\s*:")
+
+# _data/brands.yml 的条目边界与 order 字段，见 check_brand_data()
+BRAND_ITEM = re.compile(r"^- slug:[ \t]*(\S+)[ \t]*$", re.M)
+BRAND_ORDER = re.compile(r"^[ \t]+order:[ \t]*\d+[ \t]*$", re.M)
 
 
 def site_files() -> list[Path]:
@@ -163,17 +168,21 @@ def check_layouts() -> list[str]:
 
 
 def check_jekyll3_compat(files: list[Path]) -> list[str]:
-    """挡住只在本地 Jekyll 4 上能过、线上 Jekyll 3.10 会炸的写法。
+    """挡住 Jekyll 4 能过、线上 Jekyll 3.10 会炸的写法。
 
-    线上 GitHub Pages 用的是 jekyll 3.10.0（github-pages v232），本机装的
-    是一般版 Jekyll 4。两者对 where_exp 的解析不同：3.10 的 parse_condition
-    只认「单个比较」或「单个真值表达式」，解析完立刻要求 end_of_string；
-    写成 `where_exp: "p", "p.updated and p.listed != false"` 会抛
-    `Liquid syntax error: Expected end_of_string but found id`，
-    整个构建直接失败——而本机构建是好的，只有推上去才会发现。
+    线上 GitHub Pages 用的是 jekyll 3.10.0（github-pages v232）。它的
+    parse_condition 只认「单个比较」或「单个真值表达式」，解析完立刻要求
+    end_of_string；写成 `where_exp: "p", "p.updated and p.listed != false"`
+    会抛 `Liquid syntax error: Expected end_of_string but found id`，
+    整个构建直接失败。Jekyll 4 支持这种复合条件，所以只要本机没钉住版本
+    （见 Gemfile 里的 github-pages 232），本地构建就是好的、推上去才发现。
 
-    所以这里静态挡一道：exp 类过滤器里出现 and/or 一律报错，要求拆成多次过滤。
-    顺带拦一下 Jekyll 4 才有的 find / find_exp（3.10 没有，会报未定义过滤器）。
+    本地钉住版本后这种错已经能复现，但这里仍然保留静态检查：
+    CI 上只跑 python（见 .github/workflows/content-check.yml），
+    不必装 Ruby/Jekyll 就能在 push 时挡住同类写法。
+
+    具体查两件事：exp 类过滤器里出现 and/or（要求拆成多次过滤），
+    以及 Jekyll 4 才有的 find / find_exp（3.10 没有，会报未定义过滤器）。
     """
     targets: list[Path] = []
     for sub in ("_layouts", "_includes"):
@@ -200,6 +209,26 @@ def check_jekyll3_compat(files: list[Path]) -> list[str]:
             problems.append(
                 "[jekyll3] %s 用了 Jekyll 4 才有的 %s 过滤器，线上 Jekyll 3.10 会报未定义过滤器"
                 % (rel, m.group(1))
+            )
+    return problems
+
+
+def check_brand_data(text: str) -> list[str]:
+    """brands.yml 里每个品牌都必须有 order。
+
+    hub.html 用 `sort: "order"` 排品牌卡片。字段缺失时所有 key 都是 nil，
+    Ruby 的 sort 不是稳定排序——构建照样成功，但卡片顺序会在本地和线上
+    之间漂移（airport 栏目页就这么出现过 KTM 和魔戒对调）。
+    这种错构建不会报，只能在这里查。
+    """
+    problems: list[str] = []
+    items = list(BRAND_ITEM.finditer(text))
+    for i, m in enumerate(items):
+        chunk = text[m.end():items[i + 1].start() if i + 1 < len(items) else len(text)]
+        if not BRAND_ORDER.search(chunk):
+            problems.append(
+                "[brands] _data/brands.yml 的 %s 缺 order 字段，"
+                "栏目页品牌卡片顺序会不定" % m.group(1)
             )
     return problems
 
@@ -296,6 +325,9 @@ def main() -> int:
     problems += check_liquid(files)
     problems += check_layouts()
     problems += check_jekyll3_compat(files)
+    brands_file = ROOT / "_data" / "brands.yml"
+    if brands_file.exists():
+        problems += check_brand_data(brands_file.read_text(encoding="utf-8", errors="replace"))
 
     if problems:
         print("内容自检未通过：")
@@ -304,8 +336,8 @@ def main() -> int:
         return 10
 
     print(
-        "内容自检通过：%d 个页面，front matter、站内链接、模板标签、Jekyll 3.10 兼容性、sitemap 均正常。"
-        % len(files)
+        "内容自检通过：%d 个页面，front matter、站内链接、模板标签、"
+        "Jekyll 3.10 兼容性、品牌数据、sitemap 均正常。" % len(files)
     )
     return 0
 

@@ -9,6 +9,11 @@ Gemfile.lock
 Gemfile
 _config.local.yml
 
+# Bundler 装在本机的那套 gem（钉住 github-pages 232 以对齐线上 Pages 版本），
+# 体积大且是本机环境，不进仓库；_config.yml 的 exclude 里也挡了 vendor/
+vendor/
+.bundle/
+
 # 编辑器 / 系统
 .DS_Store
 Thumbs.db

@@ -6,6 +6,10 @@
 # 字段说明：
 #   slug        目录名与 front matter 里 brand 的取值，必须与页面路径一致
 #   vertical    归属栏目，取值必须是 verticals.yml 里的 slug
+#   order       同栏目内的展示顺序（数字，小的在前）。
+#               必须有：hub.html 用 sort: "order" 排品牌卡片，字段缺失时
+#               所有 key 都是 nil，Ruby 的 sort 不是稳定排序，卡片顺序会在
+#               本地和线上之间随机漂移。
 #   badge       卡片角标，留空则不显示
 #   aff         推广入口（全站唯一维护点）
 #   entries     额外入口，机场常见「同一家的多个线路入口」
@@ -19,6 +23,7 @@
 - slug: mojie
   name: 魔戒
   vertical: airport
+  order: 1
   badge: 备用线首选
   tagline: 一次买断、流量不清零
   summary: "一次买断、流量不清零。两个入口是同一家的不同线路入口，其中一个打不开时换另一个试。"
@@ -49,6 +54,7 @@
 - slug: ktm
   name: KTM
   vertical: airport
+  order: 2
   badge: 大流量
   tagline: 大流量套餐 + IEPL 专线
   summary: "按列出的套餐价格与流量额度折算，月付额度用满时单 GB 成本较低；另有 IEPL 专线系列。实际体验与是否划算取决于用量和本地网络。"
@@ -79,6 +85,7 @@
 - slug: ofox
   name: Ofox
   vertical: ai-api
+  order: 1
   badge: 在用
   tagline: 一个 Key 调用 100+ 大模型
   summary: "大模型 API 聚合服务：兼容 OpenAI、Anthropic、Gemini 三种接口协议，但模型目录远不止这三家——100+ 个模型、十余家厂商，Claude、GPT、Gemini、DeepSeek、通义千问、豆包、智谱 GLM、Kimi、MiniMax 等都在里面。支持支付宝与微信付款，Claude Code、Cursor 这类工具基本只改一个 base_url 就能接上。"

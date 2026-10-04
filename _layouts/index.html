@@ -50,7 +50,8 @@ layout: default
 两个条件必须拆成两次 where_exp，不能写成 "p.updated and p.listed != false"：
 线上 GitHub Pages 用的是 Jekyll 3.10，它的 where_exp 只解析「单个比较」或
 「单个真值表达式」，遇到 and/or 会直接抛 Liquid syntax error 中断整个构建
-（本地 Jekyll 4 支持 and，所以本机跑不出这个错，见 tools/check_content.py 的兼容性检查）。
+（本地已用 Gemfile 钉住 github-pages 232，能复现这个错；CI 上不跑 Jekyll，
+另由 tools/check_content.py 静态挡一道）。
 {%- endcomment -%}
 {%- assign recent = site.pages | where_exp: "p", "p.updated" | where_exp: "p", "p.listed != false" | sort: "updated" | reverse %}
 <ul class="recent-list">
