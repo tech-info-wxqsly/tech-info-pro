@@ -1,0 +1,43 @@
+# 顶部导航与首页快捷入口。数据驱动，加栏目不需要改模板。
+#
+# main        顶部导航项
+# quick_links 首页「按场景找答案」区块，问句 + 去哪一篇
+
+main:
+  - { label: "机场实测", url: "/airport/", vertical: airport }
+  - { label: "AI API", url: "/ai-api/", vertical: ai-api }
+  - { label: "客户端教程", url: "/guides/", vertical: shared }
+
+quick_links:
+  - scene: "还没装客户端"
+    question: "手上是 Windows 或 Mac，第一步该装什么？"
+    label: "Clash Verge 下载与安装教程"
+    url: "/guides/clash-verge-install.html"
+  - scene: "想浏览全部教程"
+    question: "安装、订阅、选型和排障指南在哪？"
+    label: "查看教程总览"
+    url: "/guides/"
+  - scene: "iPhone 用户"
+    question: "iPhone 客户端暂时无法安装，如何先临时联网？"
+    label: "电脑临时桥接与客户端选择"
+    url: "/guides/ios-proxy-setup.html"
+  - scene: "不知道买哪档"
+    question: "一次性买断、月付大流量、专线，单 GB 成本怎么算？"
+    label: "机场套餐怎么选"
+    url: "/guides/plan-choosing-guide.html"
+  - scene: "要用 AI 编程"
+    question: "Claude Code 拉不起来，接口该怎么配？"
+    label: "Ofox 接入实测与配置"
+    url: "/ai-api/ofox/"
+  - scene: "纠结用哪家"
+    question: "OpenRouter 和 Ofox 到底该选哪个？"
+    label: "两家聚合服务对比"
+    url: "/ai-api/ofox/openrouter-vs-ofox.html"
+  - scene: "突然连不上"
+    question: "是机场挂了还是我这边的问题？"
+    label: "五分钟自检流程"
+    url: "/guides/proxy-down-diagnosis.html"
+  - scene: "买之前想省钱"
+    question: "各家的当前标价和折算单价在哪看？"
+    label: "机场实测：线路与资费"
+    url: "/airport/"

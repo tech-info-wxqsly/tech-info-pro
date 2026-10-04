@@ -1,6 +1,6 @@
-title: "科学上网线路实测笔记"
-tagline: "翻墙机场推荐、资费对比与客户端配置"
-description: "2026 年机场推荐与科学上网教程：长期自用线路实测记录，覆盖一次买断、月付大流量与 IEPL 专线三类计费方案，并附 Windows、macOS 与 iOS 客户端的配置与避坑指南。"
+title: "Tech-Info 实测笔记"
+tagline: "机场推荐、AI API 实测与客户端配置"
+description: "长期自用的两条线记录：机场官方套餐价格核对与个人网络体验，以及 Claude Code、Codex CLI 接入大模型 API 的配置与成本，附各平台客户端设置与排查指南。"
 lang: "zh-CN"
 
 markdown: kramdown
@@ -11,9 +11,11 @@ baseurl: ""
 
 # 不随站点发布的目录与文件。
 # tools/ 是本地与 Actions 使用的巡检脚本，文档站不需要对外提供；
+# docs/ 只留本地（方案、维护手册），避免内部文档被发布成页面；
 # 其余是 Jekyll 默认排除项，写上是为了设置了 exclude 之后不被覆盖。
 exclude:
   - tools/
+  - docs/
   - Gemfile
   - Gemfile.lock
   - node_modules/
@@ -21,9 +23,54 @@ exclude:
   - .sass-cache/
   - .jekyll-cache/
 
-# 全站套用主题的居中排版
+# front matter 默认值。加品牌、加文章时不再需要每页重复声明这些字段，
+# 也避免漏写导致页面从栏目聚合里掉出去。
 defaults:
   - scope:
       path: ""
     values:
       layout: "default"
+
+  # 公共教程层：平台无关，不隶属任何品牌
+  - scope:
+      path: "guides"
+    values:
+      layout: "article"
+      vertical: "shared"
+      kind: "tutorial"
+
+  # 机场栏目
+  - scope:
+      path: "airport"
+    values:
+      vertical: "airport"
+      layout: "hub"
+      kind: "hub"
+  - scope:
+      path: "airport/mojie"
+    values:
+      layout: "brand"
+      kind: "brand"
+      brand: "mojie"
+  - scope:
+      path: "airport/ktm"
+    values:
+      layout: "brand"
+      kind: "brand"
+      brand: "ktm"
+
+  # AI API 栏目
+  - scope:
+      path: "ai-api"
+    values:
+      vertical: "ai-api"
+      layout: "hub"
+      kind: "hub"
+  # ai-api/ofox/ 下的文件默认是 ofox 的系列文章（brand-article）；
+  # 品牌落地页 ofox/index.md 自行声明 layout: brand 与 kind: brand 覆盖这里。
+  - scope:
+      path: "ai-api/ofox"
+    values:
+      layout: "brand-article"
+      kind: "tutorial"
+      brand: "ofox"

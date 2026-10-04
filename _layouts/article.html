@@ -1,0 +1,13 @@
+---
+# layout: default 让本模板套上全站骨架（head、CSS、导航、面包屑、页脚）。
+layout: default
+---
+{%- comment -%}
+公共教程模板（guides/）。
+这些文章平台无关，不隶属任何品牌，所以不出现品牌推广区块，只带面包屑与相关阅读。
+{%- endcomment -%}
+<article class="guide">
+  {{ content }}
+
+  {% include related.html %}
+</article>

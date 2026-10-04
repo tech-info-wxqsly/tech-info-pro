@@ -1,0 +1,16 @@
+{%- comment -%}
+顶部导航。数据源 _data/nav.yml 的 main 段。
+aria-current 用于标记当前栏目，样式挂在 CSS 的 [aria-current] 上。
+{%- endcomment -%}
+<nav class="site-nav" aria-label="站点导航">
+  <a class="site-nav__brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+  <ul class="site-nav__list">
+    {%- for item in site.data.nav.main %}
+    {%- assign is_current = false %}
+    {%- if page.vertical and item.vertical == page.vertical %}{% assign is_current = true %}{% endif %}
+    <li>
+      <a href="{{ item.url | relative_url }}"{% if is_current %} aria-current="true"{% endif %}>{{ item.label }}</a>
+    </li>
+    {%- endfor %}
+  </ul>
+</nav>

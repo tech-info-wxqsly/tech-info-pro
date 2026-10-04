@@ -1,7 +1,7 @@
 ---
-layout: default
-title: "2026 机场推荐实测：科学上网线路的资费、稳定性与避坑记录"
-description: "2026 年机场推荐与科学上网实测笔记：长期自用线路的真实资费、晚高峰稳定性与避坑经验，覆盖流量不清零、月付大流量与 IEPL 专线三类选择，附 Windows、macOS 与 iOS 客户端配置教程。"
+layout: index
+title: "机场推荐与 AI API 实测笔记"
+description: "长期自用的两条线记录：机场官方标价核对与个人晚高峰体验，以及 Claude Code、Codex CLI 接入大模型 API 的配置与成本。先看场景入口，再按需要点进对应文章。"
+breadcrumb: false
+updated: 2026-10-04
 ---
-
-{% include_relative README.md %}

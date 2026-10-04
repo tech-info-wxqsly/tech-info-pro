@@ -1,0 +1,5 @@
+{%- comment -%}
+按品牌聚合文章列表。调用后可在同一页面里用 brand_posts 变量。
+参数：slug（必填）
+{%- endcomment -%}
+{%- assign brand_posts = site.pages | where: "brand", include.slug | where_exp: "p", "p.kind != 'hub'" | sort: "nav_weight" -%}

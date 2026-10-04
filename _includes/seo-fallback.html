@@ -1,0 +1,15 @@
+{%- comment -%}
+SEO 兜底标签。
+GitHub Pages 上 site.github 一定存在，此时 jekyll-seo-tag 生效、上面的 {% seo %} 会输出完整标签，
+本文件整体跳过，避免重复；本地或其它环境没有该插件时，这里补上最低限度的 canonical 与社交卡片。
+{%- endcomment -%}
+{%- unless site.github %}
+<meta name="description" content="{{ page.description | default: site.description | escape }}">
+<link rel="canonical" href="{{ page.url | absolute_url }}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{ page.title | default: site.title | escape }}">
+<meta property="og:description" content="{{ page.description | default: site.description | escape }}">
+<meta property="og:url" content="{{ page.url | absolute_url }}">
+<meta property="og:site_name" content="{{ site.title | escape }}">
+<meta name="twitter:card" content="summary">
+{%- endunless %}

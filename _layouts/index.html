@@ -1,0 +1,62 @@
+---
+# Jekyll 只把带 front matter 的文件当作 layout（没有这一段会被当成普通页面）。
+# layout: default 是必须的——模板本身只是一段内容，全站的 head、CSS、导航、
+# 面包屑、页脚都在 default.html 里，少了这一行就是一个没有样式的裸片段。
+layout: default
+---
+{%- comment -%}
+首页模板（门户页）。
+只做分流：两条业务线各一张名片 + 按场景的热门入口 + 最新更新。
+具体价格与品牌细节放在栏目页和品牌页，避免首页因为价格变动而反复重新收录。
+{%- endcomment -%}
+<section class="hero">
+  <h1 class="hero__title">{{ site.title }}</h1>
+  <p class="hero__lead">两条线，各管一段：<strong>机场</strong>解决网络通不通，<strong>AI API</strong>解决模型调不调得到。下面是长期自用的实测记录，需要哪块点进哪块。</p>
+</section>
+
+<h2 class="section-title">从这里开始</h2>
+<div class="card-grid">
+  {%- assign verticals = site.data.verticals | sort: "order" %}
+  {%- for v in verticals %}
+  {%- assign v_brands = site.data.brands | where: "vertical", v.slug %}
+  <div class="vcard">
+    <span class="vcard__icon" aria-hidden="true">{{ v.icon }}</span>
+    <a class="vcard__name" href="{{ '/' | append: v.slug | append: '/index.html' | relative_url }}">{{ v.name }}</a>
+    <span class="vcard__title">{{ v.card_title }}</span>
+    <span class="vcard__text">{{ v.card_text }}</span>
+    {%- if v_brands.size > 0 %}
+    <span class="vcard__brands">
+      {%- for b in v_brands %}{{ b.name }}{% unless forloop.last %} · {% endunless %}{% endfor %}
+    </span>
+    {%- endif %}
+    <a class="vcard__more" href="{{ '/' | append: v.slug | append: '/index.html' | relative_url }}">进入栏目 →</a>
+  </div>
+  {%- endfor %}
+</div>
+
+<h2 class="section-title">按场景找答案</h2>
+<ul class="quick-list">
+  {%- for item in site.data.nav.quick_links %}
+  <li class="quick-list__item">
+    <span class="quick-list__scene">{{ item.scene }}</span>
+    <span class="quick-list__q">{{ item.question }}</span>
+    <a class="quick-list__a" href="{{ item.url | relative_url }}">{{ item.label }} →</a>
+  </li>
+  {%- endfor %}
+</ul>
+
+<h2 class="section-title">最新更新</h2>
+{%- assign recent = site.pages | where_exp: "p", "p.updated and p.listed != false" | sort: "updated" | reverse %}
+<ul class="recent-list">
+  {%- for p in recent limit: 6 %}
+  {%- if p.url == page.url %}{% continue %}{% endif %}
+  <li>
+    <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+    <span class="recent-list__date">{{ p.updated }}</span>
+  </li>
+  {%- endfor %}
+</ul>
+
+<aside class="site-note">
+  <p><strong>关于本站</strong>：站内标价整理自各家官方套餐页，不影响结论——不适合的线路我会直接写清楚不适合谁。机场调价很频繁，下单前请再核对一次官方价目页。</p>
+</aside>

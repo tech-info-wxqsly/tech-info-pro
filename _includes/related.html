@@ -1,0 +1,37 @@
+{%- comment -%}
+相关阅读。品牌文章自动带出同品牌其它文章，外加公共教程层的固定入口。
+参数：
+  brand    可选。填了就把同品牌文章列进来
+  exclude  可选。要排除的 URL（一般是当前页），避免自链
+  guides   可选。true 时附上公共教程入口（默认 true）
+{%- endcomment -%}
+{%- assign guides_on = true -%}
+{%- if include.guides == false %}{% assign guides_on = false %}{% endif -%}
+{%- assign siblings = "" | split: "" -%}
+{%- if include.brand %}
+{%- assign all = site.pages | where: "brand", include.brand | sort: "nav_weight" -%}
+{%- for p in all %}
+{%- unless p.url == include.exclude %}{% assign siblings = siblings | push: p %}{% endunless %}
+{%- endfor %}
+{%- endif %}
+
+<div class="related">
+  {%- if siblings.size > 0 %}
+  <p class="related__title">{{ include.brand_name | default: "同系列" }}的其他文章</p>
+  <ul class="related__list">
+    {%- for p in siblings %}
+    <li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+
+  {%- if guides_on %}
+  <p class="related__title">公共教程</p>
+  <ul class="related__list">
+    <li><a href="{{ '/guides/clash-verge-install.html' | relative_url }}">Clash Verge 下载与安装教程</a></li>
+    <li><a href="{{ '/guides/clash-verge-subscribe.html' | relative_url }}">Clash Verge 订阅导入与分流教程</a></li>
+    <li><a href="{{ '/guides/plan-choosing-guide.html' | relative_url }}">机场套餐怎么选：三类计费模型</a></li>
+    <li><a href="{{ '/guides/proxy-down-diagnosis.html' | relative_url }}">机场突然用不了怎么排查</a></li>
+  </ul>
+  {%- endif %}
+</div>

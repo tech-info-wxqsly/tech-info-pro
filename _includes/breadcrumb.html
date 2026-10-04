@@ -1,0 +1,48 @@
+{%- comment -%}
+面包屑。由 front matter 的 vertical / brand 自动生成，不需要每页手写。
+生成规则：首页 › 栏目 › 品牌（品牌页）› 当前页
+首页本身不显示（只有「首页」两个字没有意义），用 front matter 的 breadcrumb: false 关掉。
+
+参数：
+  trail  可选。额外层级，格式 "标签::路径|标签::路径"（用于 guides 这类公共教程）
+{%- endcomment -%}
+{%- unless page.breadcrumb == false -%}
+{%- assign v = site.data.verticals | where: "slug", page.vertical | first -%}
+{%- assign hub_url = '/' | append: page.vertical | append: '/index.html' -%}
+<nav class="crumbs" aria-label="面包屑">
+  <a href="{{ '/' | relative_url }}">首页</a>
+  {%- if v %}
+  <span class="crumbs__sep">›</span>
+  {%- if page.url == hub_url %}
+  <span>{{ v.name }}</span>
+  {%- else %}
+  <a href="{{ hub_url | relative_url }}">{{ v.name }}</a>
+  {%- endif %}
+  {%- endif %}
+  {%- if page.brand %}
+  {%- assign b = site.data.brands | where: "slug", page.brand | first %}
+  {%- if b %}
+  {%- assign b_url = '/' | append: b.vertical | append: '/' | append: b.slug | append: '/index.html' %}
+  {%- assign b_prefix = '/' | append: b.vertical | append: '/' | append: b.slug | append: '/' %}
+  <span class="crumbs__sep">›</span>
+  {%- if page.url == b_url %}
+  <span>{{ b.name }}</span>
+  {%- else %}
+  <a href="{{ b_url | relative_url }}">{{ b.name }}</a>
+  {%- endif %}
+  {%- endif %}
+  {%- endif %}
+  {%- if include.trail %}
+  {%- assign items = include.trail | split: "|" %}
+  {%- for item in items %}
+  {%- assign kv = item | split: "::" %}
+  <span class="crumbs__sep">›</span>
+  {%- if kv[1] %}
+  <a href="{{ kv[1] | relative_url }}">{{ kv[0] }}</a>
+  {%- else %}
+  <span>{{ kv[0] }}</span>
+  {%- endif %}
+  {%- endfor %}
+  {%- endif %}
+</nav>
+{%- endunless -%}

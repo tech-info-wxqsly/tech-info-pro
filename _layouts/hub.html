@@ -1,0 +1,40 @@
+---
+# layout: default 让本模板套上全站骨架（head、CSS、导航、面包屑、页脚）。
+layout: default
+---
+{%- comment -%}
+L1 栏目页模板。
+自动列出该栏目下的品牌卡片、公共教程入口；若页面正文为空，则直接渲染栏目的 hub 文案。
+{%- endcomment -%}
+{%- assign v = site.data.verticals | where: "slug", page.vertical | first -%}
+<article class="hub">
+  <h1>{{ page.heading | default: v.hub_title | default: page.title }}</h1>
+
+  {{ content }}
+
+  {%- assign v_brands = site.data.brands | where: "vertical", page.vertical | sort: "order" %}
+  {%- if v_brands.size > 0 %}
+  <h2 class="section-title">{{ v.name }}里的线路</h2>
+  <div class="card-grid">
+    {%- for b in v_brands %}
+    {% include brand-card.html slug=b.slug %}
+    {%- endfor %}
+  </div>
+  {%- endif %}
+
+  {%- assign v_pages = site.pages | where: "vertical", page.vertical | where: "kind", "tutorial" | sort: "nav_weight" %}
+  {%- if v_pages.size > 0 %}
+  <h2 class="section-title">本栏目教程</h2>
+  <ul class="link-list">
+    {%- for p in v_pages %}
+    <li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+
+  {%- if v.faq_source %}
+  {%- assign faq = site.data[v.faq_source] %}
+  <h2 class="section-title">常见问题</h2>
+  {% include faq.html faq=faq jsonld=true %}
+  {%- endif %}
+</article>

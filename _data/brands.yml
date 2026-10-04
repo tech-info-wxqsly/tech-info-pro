@@ -1,0 +1,104 @@
+# 品牌单一事实来源。
+#
+# 全站所有推广入口、品牌卡片、价格表头都从这里取数据——改价格只改这里，
+# 不需要去翻每一篇文章。新增品牌 = 在这里加一段 + 建一个品牌页。
+#
+# 字段说明：
+#   slug        目录名与 front matter 里 brand 的取值，必须与页面路径一致
+#   vertical    归属栏目，取值必须是 verticals.yml 里的 slug
+#   badge       卡片角标，留空则不显示
+#   aff         推广入口（全站唯一维护点）
+#   entries     额外入口，机场常见「同一家的多个线路入口」
+#   price_page  官方完整价目页
+#   price_rows  价格概览，列顺序见 brand.html 模板的固定表头
+#   highlights  三到五条卖点，实测口吻，不写广告词
+#   fit_for     适合谁
+#   caveat      需要注意的地方（保持实测基调，这条不能省）
+#   updated     最后核对官方价格的日期
+
+- slug: mojie
+  name: 魔戒
+  vertical: airport
+  badge: 备用线首选
+  tagline: 一次买断、流量不清零
+  summary: "一次买断、流量不清零。两个入口是同一家的不同线路入口，其中一个打不开时换另一个试。"
+  aff: "https://74.82.196.10:8000/register?aff=x29hbD7Z"
+  entries:
+    - label: 入口一
+      url: "https://74.82.196.10:8000/register?aff=x29hbD7Z"
+    - label: 入口二
+      url: "https://43.129.78.33:8000/register?aff=x29hbD7Z"
+  price_page: "https://74.82.196.10:8000/shop"
+  price_rows:
+    - { plan: "试用 1G", cycle: "一次性", price: "¥1" }
+    - { plan: "130G", cycle: "一次性", price: "¥19.9" }
+    - { plan: "210G", cycle: "一次性", price: "¥29.9" }
+    - { plan: "420G", cycle: "一次性", price: "¥52" }
+    - { plan: "750G", cycle: "一次性", price: "¥85" }
+    - { plan: "1660G", cycle: "一次性", price: "¥179" }
+  protocols: "Vless / Hysteria2 / AnyTLS"
+  clients: "Shadowrocket、Clash、FLClash 等常见客户端均可用"
+  highlights:
+    - 计费方式：一次性买断，流量永久有效，用多少扣多少，不存在到期作废
+    - 富余流量不会浪费，适合用量忽多忽少的场景
+    - 小额档位多，适合先花几块钱跑几天晚高峰再决定
+  fit_for: "用量不大、想常备一条随时能切过去的备用线"
+  caveat: "单价按 GB 折算高于月付大流量套餐，不适合每天都在大量下载的场景。"
+  updated: 2026-10-04
+
+- slug: ktm
+  name: KTM
+  vertical: airport
+  badge: 大流量
+  tagline: 大流量套餐 + IEPL 专线
+  summary: "按列出的套餐价格与流量额度折算，月付额度用满时单 GB 成本较低；另有 IEPL 专线系列。实际体验与是否划算取决于用量和本地网络。"
+  aff: "https://url.ktm001.vip/#/register?code=5s5C8nud"
+  entries:
+    - label: 注册入口
+      url: "https://url.ktm001.vip/#/register?code=5s5C8nud"
+  price_page: "https://url.ktm001.vip/#/plan"
+  price_rows:
+    - { plan: "黄金套餐-3 · 1024G", cycle: "月付", price: "¥13.98" }
+    - { plan: "王者套餐-3 · 2048G", cycle: "月付", price: "¥27.96" }
+    - { plan: "IEPL 青铜 · 45G", cycle: "月付", price: "¥10" }
+    - { plan: "IEPL 黄金 · 100G", cycle: "月付", price: "¥20" }
+    - { plan: "IEPL 王者 · 200G", cycle: "月付", price: "¥30" }
+    - { plan: "IEPL 至尊 · 400G", cycle: "月付", price: "¥60" }
+    - { plan: "至尊套餐 · 1024G", cycle: "一次性", price: "¥198" }
+    - { plan: "至尊套餐（永久）· 1024G", cycle: "一次性", price: "¥398" }
+  protocols: "Hysteria2"
+  clients: "全平台客户端可用，官方推荐 Clash Verge 与 Shadowrocket"
+  highlights:
+    - 按站内列出的价格折算，月付额度用满时单 GB 成本较低；适合用量稳定的人
+    - IEPL 专线系列定位为专线通道；晚高峰表现需结合本地网络实测
+    - 同时提供一次性买断与永久型月付，可长期摊薄
+  fit_for: "经常看 4K、需要下载大文件，或几个人共用一条线路"
+  caveat: "关于两个 1024G：¥198 的套餐名是「至尊套餐」，¥398 的是「至尊套餐（永久）」，两者含义不同，下单前在套餐详情里再确认一次更稳妥。"
+  updated: 2026-10-04
+
+- slug: ofox
+  name: Ofox
+  vertical: ai-api
+  badge: 在用
+  tagline: 一个 Key 调用 100+ 大模型
+  summary: "大模型 API 聚合服务：兼容 OpenAI、Anthropic、Gemini 三种接口协议，但模型目录远不止这三家——100+ 个模型、十余家厂商，Claude、GPT、Gemini、DeepSeek、通义千问、豆包、智谱 GLM、Kimi、MiniMax 等都在里面。支持支付宝与微信付款，Claude Code、Cursor 这类工具基本只改一个 base_url 就能接上。"
+  aff: "https://ofox.ai/r/e7t2t4"
+  entries:
+    - label: 注册入口
+      url: "https://ofox.ai/r/e7t2t4"
+  price_page: "https://ofox.ai/zh/models"
+  price_rows:
+    - { plan: "计费方式", cycle: "按量", price: "以官方价目页为准" }
+    - { plan: "新用户额度", cycle: "—", price: "见官方活动页" }
+  protocols: "兼容 OpenAI / Anthropic / Gemini 三种接口协议；模型目录 100+ 个、十余家厂商（Claude、GPT、Gemini、DeepSeek、Qwen、豆包、GLM、Kimi、MiniMax、Grok 等）"
+  clients: "DeepSeek Harness、Claude Code、Codex CLI、Cursor、CC Switch，以及任何支持自定义 base_url 的客户端"
+  highlights:
+    - 支持支付宝 / 微信付款，不用为它单独办境外信用卡
+    - 模型目录 100+ 个、十余家厂商：Claude、GPT、Gemini、DeepSeek、通义千问、豆包、智谱 GLM、Kimi、MiniMax、Grok 等，一个 Key 全都能调
+    - 兼容 OpenAI / Anthropic / Gemini 三种主流接口协议——这是协议格式，和模型数量是两回事，换模型通常只改模型名
+    - 除了对话与编程模型，还有图像、视频生成模型（万相、Seedance、Nano Banana 等）
+    - 科学上网只在注册与充值（官网 ofox.ai）时需要；日常调用走 api.ofox.io，国内可直连，不必科学上网
+    - 模型目录带实时价格与端点信息，可用 /v1/models 查完整清单并直接核对
+  fit_for: "用 AI 编程工具的开发者、需要在多个模型之间对比的小团队"
+  caveat: "聚合服务的中转链路比官方直连多一跳，对延迟和可用性的要求要看自己的场景；关键业务建议先小额实测再放量。"
+  updated: 2026-10-04

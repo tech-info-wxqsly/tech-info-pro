@@ -1,0 +1,19 @@
+---
+# layout: default 让本模板套上全站骨架（head、CSS、导航、面包屑、页脚）。
+layout: default
+---
+{%- comment -%}
+品牌文章模板（L3）。
+与 brand.html 的区别：本模板用于具体文章，末尾自动带出同品牌其它文章作为相关阅读。
+{%- endcomment -%}
+{%- assign b = site.data.brands | where: "slug", page.brand | first -%}
+<article class="brand-article">
+  {{ content }}
+
+  {%- if b %}
+  {% include aff-cta.html slug=b.slug %}
+  {% include related.html brand=page.brand exclude=page.url brand_name=b.name %}
+  {%- else %}
+  {% include related.html %}
+  {%- endif %}
+</article>

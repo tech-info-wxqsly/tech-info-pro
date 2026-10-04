@@ -1,0 +1,15 @@
+{%- comment -%}
+品牌卡片。首页与栏目页共用。
+参数：slug（必填），取自 _data/brands.yml
+{%- endcomment -%}
+{%- assign b = site.data.brands | where: "slug", include.slug | first -%}
+{%- if b %}
+<a class="brand-card" href="{{ '/' | append: b.vertical | append: '/' | append: b.slug | append: '/index.html' | relative_url }}">
+  <span class="brand-card__head">
+    <strong class="brand-card__name">{{ b.name }}</strong>
+    {%- if b.badge %}<span class="brand-card__badge">{{ b.badge }}</span>{% endif %}
+  </span>
+  <span class="brand-card__tagline">{{ b.tagline }}</span>
+  <span class="brand-card__text">{{ b.fit_for }}</span>
+</a>
+{%- endif %}

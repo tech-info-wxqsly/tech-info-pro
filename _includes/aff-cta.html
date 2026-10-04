@@ -1,0 +1,26 @@
+{%- comment -%}
+统一推广入口区块。全站所有推广按钮都走这里，好处有两个：
+  1. rel="sponsored nofollow" 只在这里维护一次，不会漏；
+  2. 披露语位置固定，符合「实测为主、推广明确标注」的基调。
+
+参数：slug（必填）, compact（可选，true 时只出按钮不出说明）
+{%- endcomment -%}
+{%- assign b = site.data.brands | where: "slug", include.slug | first -%}
+{%- if b %}
+<aside class="aff-cta">
+  <p class="aff-cta__label">{{ b.name }} · {{ b.tagline }}</p>
+  <p class="aff-cta__buttons">
+    {%- for e in b.entries %}
+    <a class="aff-cta__button" href="{{ e.url }}" target="_blank" rel="sponsored nofollow noopener">{{ e.label }}</a>
+    {%- endfor %}
+    {%- if b.price_page %}
+    <a class="aff-cta__link" href="{{ b.price_page }}" target="_blank" rel="sponsored nofollow noopener">{% if b.vertical == 'ai-api' %}官方模型与价格{% else %}官方完整价目{% endif %} →</a>
+    {%- endif %}
+  </p>
+  {%- unless include.compact %}
+  <p class="aff-cta__note">
+    <strong>推广说明：</strong>本页入口含推广参数；若通过链接注册或购买，本站可能获得推广收益。站内标价整理自官方套餐页，调价与促销都很频繁，下单前请再核对官方价目页；线路体验受本地运营商和地区影响，建议先用最小档跑几天晚高峰。
+  </p>
+  {%- endunless %}
+</aside>
+{%- endif %}

@@ -1,0 +1,63 @@
+---
+# layout: default 让本模板套上全站骨架（head、CSS、导航、面包屑、页脚）。
+layout: default
+---
+{%- comment -%}
+L2 品牌页模板。价格、卖点、适合谁、注意事项全部来自 _data/brands.yml，
+文章列表按 front matter 的 brand 自动聚合——加文章不用回来改这个页面。
+{%- endcomment -%}
+{%- assign b = site.data.brands | where: "slug", page.brand | first -%}
+<article class="brand">
+  <h1>{{ b.name }}：{{ b.tagline }}</h1>
+
+  <p class="brand__lead">{{ b.summary }}</p>
+
+  {%- if page.aff_top %}
+  {% include aff-cta.html slug=b.slug %}
+  {%- endif %}
+
+  {{ content }}
+
+  <h2 class="section-title">当前标价</h2>
+  <table class="brand__price">
+    <thead>
+      <tr><th>套餐</th><th>计费周期</th><th>价格</th></tr>
+    </thead>
+    <tbody>
+      {%- for row in b.price_rows %}
+      <tr>
+        <td>{{ row.plan }}</td>
+        <td>{{ row.cycle }}</td>
+        <td>{{ row.price }}</td>
+      </tr>
+      {%- endfor %}
+    </tbody>
+  </table>
+  <p class="brand__meta">
+    价格核对日期：{{ b.updated }}　·　协议：{{ b.protocols }}　·　客户端：{{ b.clients }}
+  </p>
+
+  <h2 class="section-title">实测结论</h2>
+  <ul class="brand__highlights">
+    {%- for h in b.highlights %}
+    <li>{{ h }}</li>
+    {%- endfor %}
+  </ul>
+  <p class="brand__fit"><strong>适合谁：</strong>{{ b.fit_for }}</p>
+  <p class="brand__caveat"><strong>要注意：</strong>{{ b.caveat }}</p>
+
+  {%- unless page.aff_top %}
+  {% include aff-cta.html slug=b.slug %}
+  {%- endunless %}
+
+  {% include brand-posts.html slug=page.brand %}
+  {%- assign posts = brand_posts | where_exp: "p", "p.kind != 'hub'" %}
+  {%- if posts.size > 0 %}
+  <h2 class="section-title">关于 {{ b.name }} 的全部文章</h2>
+  <ul class="link-list">
+    {%- for p in posts %}
+    <li><a href="{{ p.url | relative_url }}">{{ p.title }}</a></li>
+    {%- endfor %}
+  </ul>
+  {%- endif %}
+</article>
