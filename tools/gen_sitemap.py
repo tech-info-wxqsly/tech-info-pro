@@ -7,10 +7,14 @@
 就永远不会被主动提交给搜索引擎。这里改成从文件树生成，并在 CI 里校验
 「生成结果与仓库里的文件一致」，让它不可能再漂移。
 
+站点地址（<loc> 的前缀）从 _config.yml 的顶层 url 读，脚本里不再写域名常量；
+换域名时只改 _config.yml，这里重新 --write 一次即可跟上。
+
 用法：
     python tools/gen_sitemap.py            # 打印当前应有的 sitemap 内容
     python tools/gen_sitemap.py --write    # 写入 sitemap.xml
     python tools/gen_sitemap.py --check    # 与仓库里的 sitemap.xml 比对，不一致退出 10
+                                           # _config.yml 读不到站点地址时退出 2
 """
 
 from __future__ import annotations
@@ -24,6 +28,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SITEMAP = ROOT / "sitemap.xml"
+CONFIG = ROOT / "_config.yml"
+
+
+class ConfigError(RuntimeError):
+    """_config.yml 里读不到站点地址。"""
+
 
 for _stream in (sys.stdout, sys.stderr):
     if hasattr(_stream, "reconfigure"):
@@ -39,11 +49,35 @@ EXCLUDE_FILES = {"README.md", "CNAME", "robots.txt", "sitemap.xml", "404.html"}
 
 FRONT_MATTER = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n", re.S)
 
+# _config.yml 的顶层 url 字段，形如 url: "https://example.com"
+CONFIG_URL = re.compile(r"^url:[ \t]*(.*)$", re.M)
+
 # 首页 > 栏目页 > 品牌页 > 文章
 PRIORITY = [
     ("index.md", "1.0", "weekly"),
     ("index.html", "1.0", "weekly"),
 ]
+
+
+def site_url() -> str:
+    """站点地址的唯一来源：_config.yml 的顶层 url。
+
+    这里刻意不再写一份域名常量。sitemap 的 <loc> 与 robots.txt 的 Sitemap 行
+    都从这个函数取；两边各写一份的话，换域名时会出现
+    「改了 _config.yml、sitemap 还是旧域名，而 --check 因为两边读的是同一个
+    写死的常量，照样判定一致」——错误只在线上才暴露。
+    """
+    if not CONFIG.exists():
+        raise ConfigError("找不到 %s，无法确定站点地址" % CONFIG.name)
+    m = CONFIG_URL.search(CONFIG.read_text(encoding="utf-8", errors="replace"))
+    if not m:
+        raise ConfigError("%s 里没有顶层 url 字段，无法确定站点地址" % CONFIG.name)
+    url = m.group(1).strip().strip('"').strip("'").strip().rstrip("/")
+    if not url:
+        raise ConfigError("%s 的 url 字段是空的" % CONFIG.name)
+    if not re.match(r"^https?://", url):
+        raise ConfigError("%s 的 url 不是完整地址：%s" % (CONFIG.name, url))
+    return url
 
 
 def parse_front_matter(text: str) -> dict[str, str]:
@@ -120,7 +154,7 @@ def collect() -> list[tuple[str, str, str, str]]:
 
 
 def render(entries: list[tuple[str, str, str, str]]) -> str:
-    base = "https://tech-info.top"
+    base = site_url()
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         "<!-- 本文件由 tools/gen_sitemap.py 生成，请勿手工编辑。 -->",
@@ -146,7 +180,12 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 
-    content = render(collect())
+    try:
+        content = render(collect())
+    except ConfigError as exc:
+        # 退出码 2 = 配置读不到，产出不可信，一律不落盘（与 price_watch.py 同一约定）
+        print("错误：" + str(exc), file=sys.stderr)
+        return 2
 
     if args.write:
         SITEMAP.write_text(content, encoding="utf-8")

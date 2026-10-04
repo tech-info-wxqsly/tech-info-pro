@@ -13,7 +13,9 @@
 ## 目录结构
 
 ```
-_config.yml              Jekyll 配置；front matter 默认值集中在这里
+_config.yml              Jekyll 配置；front matter 默认值与站点地址（url）集中在这里
+robots.txt               抓取规则；Sitemap 行必须与 _config.yml 的 url 一致
+sitemap.xml              由 tools/gen_sitemap.py 生成，请勿手工编辑
 _data/
   verticals.yml          业务线（栏目）定义
   brands.yml             品牌单一事实来源：推广链接、价格、卖点、适合谁
@@ -58,7 +60,7 @@ tools/                   巡检与自检脚本（不随站点发布）
 
 ```bash
 python tools/gen_sitemap.py --write   # 更新 sitemap（否则新页面不会被 IndexNow 提交）
-python tools/check_content.py         # 自检：front matter、站内链接、sitemap 一致性
+python tools/check_content.py         # 自检：front matter、站内链接、sitemap、robots 一致性
 ```
 
 ### 改价格
@@ -72,8 +74,8 @@ python tools/check_content.py         # 自检：front matter、站内链接、s
 
 | 脚本 | 作用 | 退出码 |
 | --- | --- | --- |
-| `tools/gen_sitemap.py` | 从文件树生成 `sitemap.xml` | `--check` 不一致时 10 |
-| `tools/check_content.py` | front matter / 站内链接 / sitemap 三项自检 | 不过时 10 |
+| `tools/gen_sitemap.py` | 从文件树生成 `sitemap.xml`（站点地址取自 `_config.yml`） | `--check` 不一致时 10；配置读不到时 2 |
+| `tools/check_content.py` | front matter / 站内链接 / sitemap / robots 四项自检 | 不过时 10 |
 | `tools/link_watch.py` | 巡检外部推广链接（含 `_data/brands.yml`） | 有失效时 10 |
 | `tools/price_watch.py` | 抓取各家官方套餐接口，与快照比对资费变动 | 有变动时 10 |
 | `tools/notify.py` | 多通道提醒（企业微信 / 钉钉 / 飞书 / Telegram / ntfy / 短信） | — |
@@ -82,7 +84,7 @@ python tools/check_content.py         # 自检：front matter、站内链接、s
 
 | 工作流 | 触发 | 做什么 |
 | --- | --- | --- |
-| `content-check.yml` | push / PR | 内容自检，挡住死链、漏字段、sitemap 漂移 |
+| `content-check.yml` | push / PR | 内容自检，挡住死链、漏字段、sitemap 与 robots 漂移 |
 | `link-watch.yml` | 每周一 | 推广链接有效性 + 内容自检，失效时开 issue 并推送提醒 |
 | `price-watch.yml` | 每天 | 资费变动检测，有变化就更新快照并提醒 |
 | `seo-ping.yml` | 每天 | 按 sitemap 的 `lastmod` 用 IndexNow 提交有更新的页面 |

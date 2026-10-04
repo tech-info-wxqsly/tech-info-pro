@@ -7,7 +7,8 @@
 4. Liquid 块标签配对、布局 front matter 完整；
 5. GitHub Pages（Jekyll 3.10）兼容性——CI 上不跑 Jekyll，这里静态挡一道，
    把「只有推送后才会暴露」的构建失败提前到自检阶段；
-6. brands.yml 的品牌都带 order，否则栏目页卡片顺序会在本地/线上之间漂移。
+6. brands.yml 的品牌都带 order，否则栏目页卡片顺序会在本地/线上之间漂移；
+7. robots.txt 的 Sitemap 地址与站点地址一致，且 Disallow 的目录确实不发布。
 
 用法：
     python tools/check_content.py
@@ -21,6 +22,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+
+# 同目录的生成脚本：站点地址（sitemap 前缀 / robots 的 Sitemap 行）只在它那里定义一次
+sys.path.insert(0, str(ROOT / "tools"))
+import gen_sitemap  # noqa: E402
 
 for _stream in (sys.stdout, sys.stderr):
     if hasattr(_stream, "reconfigure"):
@@ -58,6 +63,14 @@ JEKYLL4_ONLY_FILTER = re.compile(r"\|\s*(find|find_exp)\s*:")
 # _data/brands.yml 的条目边界与 order 字段，见 check_brand_data()
 BRAND_ITEM = re.compile(r"^- slug:[ \t]*(\S+)[ \t]*$", re.M)
 BRAND_ORDER = re.compile(r"^[ \t]+order:[ \t]*\d+[ \t]*$", re.M)
+
+# robots.txt 与 _config.yml，见 check_robots()
+ROBOTS = ROOT / "robots.txt"
+CONFIG = ROOT / "_config.yml"
+ROBOTS_SITEMAP = re.compile(r"^[ \t]*sitemap[ \t]*:[ \t]*(\S+)[ \t]*$", re.M | re.I)
+ROBOTS_DISALLOW = re.compile(r"^[ \t]*disallow[ \t]*:[ \t]*(\S*)[ \t]*$", re.M | re.I)
+CONFIG_EXCLUDE_HEAD = re.compile(r"^exclude:[ \t]*$", re.M)
+CONFIG_EXCLUDE_ITEM = re.compile(r"^[ \t]+-[ \t]*(\S+)[ \t]*$")
 
 
 def site_files() -> list[Path]:
@@ -240,8 +253,77 @@ def check_sitemap() -> list[str]:
         encoding="utf-8", errors="replace",
     )
     if result.returncode != 0:
-        return [result.stdout.strip() or "sitemap.xml 与文件树不一致"]
+        return [(result.stdout.strip() or result.stderr.strip()
+                 or "sitemap.xml 与文件树不一致")]
     return []
+
+
+def config_excludes() -> set[str]:
+    """_config.yml 里 exclude 列表的首段路径集合。
+
+    只认顶格的 `exclude:` 块，以及它下面缩进的 `- 条目`；遇到下一个顶格键就停。
+    """
+    if not CONFIG.exists():
+        return set()
+    text = CONFIG.read_text(encoding="utf-8", errors="replace")
+    head = CONFIG_EXCLUDE_HEAD.search(text)
+    if not head:
+        return set()
+
+    excluded: set[str] = set()
+    for line in text[head.end():].splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        item = CONFIG_EXCLUDE_ITEM.match(line)
+        if not item:
+            break  # 缩进列表结束，后面是别的配置项
+        value = item.group(1).strip().strip('"').strip("'").strip("/")
+        if value:
+            excluded.add(value.split("/")[0])
+    return excluded
+
+
+def check_robots() -> list[str]:
+    """robots.txt 与站点配置的一致性。
+
+    两个会静默漂移的点，构建和 Pages 都不会报错：
+
+      1. `Sitemap:` 是硬编码的绝对地址。换域名时如果只改了 _config.yml，
+         这里会继续指向旧域名，而 sitemap 本身是好的，谁都不会发现；
+         所以它必须等于 gen_sitemap 实际使用的站点地址。
+      2. `Disallow:` 的目录如果没同时写进 _config.yml 的 exclude，
+         那只是「请求搜索引擎别抓」，文件本身仍然发布在站点上公开可取——
+         想藏东西却忘了排除，是这个文件最容易骗到人的地方。
+    """
+    problems: list[str] = []
+    if not ROBOTS.exists():
+        return ["[robots] 缺少 robots.txt"]
+
+    text = ROBOTS.read_text(encoding="utf-8", errors="replace")
+
+    expected = gen_sitemap.site_url() + "/sitemap.xml"
+    found = ROBOTS_SITEMAP.findall(text)
+    if not found:
+        problems.append("[robots] 没有 Sitemap 行，搜索引擎不会主动来取 sitemap.xml")
+    for url in found:
+        if not url.startswith(("http://", "https://")):
+            problems.append("[robots] Sitemap 必须写绝对地址，当前是 %s" % url)
+        elif url != expected:
+            problems.append(
+                "[robots] Sitemap 指向 %s，与站点地址不一致，应为 %s" % (url, expected)
+            )
+
+    excluded = config_excludes()
+    for path in ROBOTS_DISALLOW.findall(text):
+        segment = path.strip().strip("/").split("/")[0]
+        if not segment:
+            continue  # `Disallow:` 留空表示不屏蔽任何路径，是合法写法
+        if segment not in excluded:
+            problems.append(
+                "[robots] Disallow: %s 的 %s/ 不在 _config.yml 的 exclude 里，"
+                "该目录会被发布到站点上（robots 只劝不挡）" % (path, segment)
+            )
+    return problems
 
 
 def build_available(files: list[Path]) -> set[str]:
@@ -328,6 +410,10 @@ def main() -> int:
     brands_file = ROOT / "_data" / "brands.yml"
     if brands_file.exists():
         problems += check_brand_data(brands_file.read_text(encoding="utf-8", errors="replace"))
+    try:
+        problems += check_robots()
+    except gen_sitemap.ConfigError as exc:
+        problems.append("[robots] " + str(exc))
 
     if problems:
         print("内容自检未通过：")
@@ -337,7 +423,7 @@ def main() -> int:
 
     print(
         "内容自检通过：%d 个页面，front matter、站内链接、模板标签、"
-        "Jekyll 3.10 兼容性、品牌数据、sitemap 均正常。" % len(files)
+        "Jekyll 3.10 兼容性、品牌数据、sitemap、robots 均正常。" % len(files)
     )
     return 0
 

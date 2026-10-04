@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: front matter、站内链接与 sitemap 一致性
+      - name: front matter、站内链接、sitemap 与 robots 一致性
         run: python3 tools/check_content.py
 
       - name: sitemap 是否需要重新生成
