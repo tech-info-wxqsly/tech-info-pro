@@ -55,8 +55,10 @@ jobs:
           http="${{ steps.probe.outputs.http }}"
           state="${{ steps.enforce.outputs.state }}"
 
-          # 站点恢复正常：关掉之前的异常提醒
-          if [ "$http" = "200" ]; then
+          # 站点恢复正常：关掉之前的异常提醒。
+          # 判定认「任一入口可用」，不能只认 HTTP=200：开启 Enforce HTTPS 之后
+          # HTTP 固定返回 301 跳转，再等 200 就永远等不到，异常 issue 会一直挂着关不掉。
+          if [ "$http" = "200" ] || [ "$https" = "200" ]; then
             open=$(gh issue list --state open --search "站点不可访问 in:title" --json number --jq '.[0].number')
             if [ -n "$open" ]; then gh issue close "$open" --comment "站点已恢复访问。"; fi
           fi
