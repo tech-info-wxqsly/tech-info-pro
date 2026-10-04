@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""站点内容自检。三项检查，任一不过退出 10。
+"""站点内容自检。任一项不过退出 10。
 
 1. front matter 必填字段（title / description / kind 等）；
 2. 站内相对链接可达（不含外链）；
-3. sitemap.xml 与文件树一致（委托 tools/gen_sitemap.py --check）。
+3. sitemap.xml 与文件树一致（委托 tools/gen_sitemap.py --check）；
+4. Liquid 块标签配对、布局 front matter 完整；
+5. GitHub Pages（Jekyll 3.10）兼容性——本地是 Jekyll 4，它放行的写法
+   线上可能直接构建失败，只能静态挡一道。
 
 用法：
     python tools/check_content.py
@@ -43,6 +46,13 @@ LIQUID_TAG = re.compile(
     r"\{%-?\s*(if|unless|for|case|capture|raw|endif|endunless|endfor|endcase|endcapture|endraw)\b"
 )
 LIQUID_OPENERS = {"if", "unless", "for", "case", "capture", "raw"}
+
+# 线上 GitHub Pages 是 Jekyll 3.10，与本地 Jekyll 4 有解析差异，见 check_jekyll3_compat()
+EXP_FILTER = re.compile(
+    r"""\b(where_exp|find_exp|group_by_exp)\s*:\s*(?:"[^"]*"|'[^']*')\s*,\s*("[^"]*"|'[^']*')"""
+)
+BOOLEAN_OP = re.compile(r"\s(?:and|or)\s|&&|\|\|")
+JEKYLL4_ONLY_FILTER = re.compile(r"\|\s*(find|find_exp)\s*:")
 
 
 def site_files() -> list[Path]:
@@ -152,6 +162,48 @@ def check_layouts() -> list[str]:
     return problems
 
 
+def check_jekyll3_compat(files: list[Path]) -> list[str]:
+    """挡住只在本地 Jekyll 4 上能过、线上 Jekyll 3.10 会炸的写法。
+
+    线上 GitHub Pages 用的是 jekyll 3.10.0（github-pages v232），本机装的
+    是一般版 Jekyll 4。两者对 where_exp 的解析不同：3.10 的 parse_condition
+    只认「单个比较」或「单个真值表达式」，解析完立刻要求 end_of_string；
+    写成 `where_exp: "p", "p.updated and p.listed != false"` 会抛
+    `Liquid syntax error: Expected end_of_string but found id`，
+    整个构建直接失败——而本机构建是好的，只有推上去才会发现。
+
+    所以这里静态挡一道：exp 类过滤器里出现 and/or 一律报错，要求拆成多次过滤。
+    顺带拦一下 Jekyll 4 才有的 find / find_exp（3.10 没有，会报未定义过滤器）。
+    """
+    targets: list[Path] = []
+    for sub in ("_layouts", "_includes"):
+        directory = ROOT / sub
+        if directory.exists():
+            targets += sorted(directory.glob("*.html"))
+    targets += files
+
+    problems: list[str] = []
+    for path in dict.fromkeys(targets):
+        rel = path.relative_to(ROOT)
+        text = LIQUID_COMMENT.sub("", path.read_text(encoding="utf-8", errors="replace"))
+
+        for m in EXP_FILTER.finditer(text):
+            expr = m.group(2)
+            if BOOLEAN_OP.search(expr):
+                problems.append(
+                    "[jekyll3] %s 的 %s 里用了 and/or：%s"
+                    "——线上 Jekyll 3.10 只支持单个条件，请拆成多次 %s"
+                    % (rel, m.group(1), expr, m.group(1))
+                )
+
+        for m in JEKYLL4_ONLY_FILTER.finditer(text):
+            problems.append(
+                "[jekyll3] %s 用了 Jekyll 4 才有的 %s 过滤器，线上 Jekyll 3.10 会报未定义过滤器"
+                % (rel, m.group(1))
+            )
+    return problems
+
+
 def check_sitemap() -> list[str]:
     result = subprocess.run(
         [sys.executable, str(ROOT / "tools" / "gen_sitemap.py"), "--check"],
@@ -243,6 +295,7 @@ def main() -> int:
     problems += ["[sitemap] " + line for line in check_sitemap()]
     problems += check_liquid(files)
     problems += check_layouts()
+    problems += check_jekyll3_compat(files)
 
     if problems:
         print("内容自检未通过：")
@@ -251,7 +304,8 @@ def main() -> int:
         return 10
 
     print(
-        "内容自检通过：%d 个页面，front matter、站内链接、模板标签、sitemap 均正常。" % len(files)
+        "内容自检通过：%d 个页面，front matter、站内链接、模板标签、Jekyll 3.10 兼容性、sitemap 均正常。"
+        % len(files)
     )
     return 0
 
