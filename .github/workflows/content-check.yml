@@ -1,0 +1,25 @@
+name: 内容自检
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: front matter、站内链接与 sitemap 一致性
+        run: python3 tools/check_content.py
+
+      - name: sitemap 是否需要重新生成
+        if: failure()
+        run: |
+          echo "如果上面提示 sitemap 不一致，本地执行：python tools/gen_sitemap.py --write"

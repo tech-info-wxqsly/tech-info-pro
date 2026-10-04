@@ -4,6 +4,11 @@ _site/
 .jekyll-metadata
 Gemfile.lock
 
+# 本地预览用：这两个文件只服务于本机跑 Jekyll，不进仓库
+# （线上由 GitHub Pages 构建，构建配置只认 _config.yml）
+Gemfile
+_config.local.yml
+
 # 编辑器 / 系统
 .DS_Store
 Thumbs.db
@@ -26,5 +31,7 @@ price-report.txt
 link-report.txt
 link-summary.txt
 
-# 维护手册只留本地，不进仓库，也不随站点发布
+# 内部文档只留本地，不进仓库，也不随站点发布
+# （docs/ 已在 _config.yml 的 exclude 里，这里再挡一道误提交）
 docs/maintenance-guide.md
+docs/architecture-plan.md

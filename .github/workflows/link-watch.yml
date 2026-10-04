@@ -28,6 +28,9 @@ jobs:
             echo "failed=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: 站内内容自检（front matter / 站内链接 / sitemap）
+        run: python3 tools/check_content.py
+
       - name: 记录到 issue（长期留档）
         if: steps.check.outputs.failed == 'true'
         env:

@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """检查站点正文里引用的外部推广链接是否还能正常访问。
 
-链接来源是 README.md（站点首页与仓库首页共用同一份内容源），
-因此只要页面上挂了新链接，这里就会自动纳入检查，不需要单独维护清单。
+扫描范围包含两部分：
+  1. 所有会发布成页面的源文件（.md / .html）；
+  2. _data/ 下的品牌数据文件——推广入口集中在 brands.yml，不扫这里等于没扫。
+
+因此只要页面上挂了新链接（或新增一个品牌），这里就会自动纳入检查，
+不需要单独维护清单。
 
 用法：
     python tools/link_watch.py            # 检查并输出报告，全部正常退出 0，有异常退出 10
+    python tools/link_watch.py --list-only              # 只列出扫到的链接，不发请求
     python tools/link_watch.py --summary-file out.txt   # 额外写出适合短信推送的短摘要
 
 判定口径：
@@ -17,19 +22,31 @@
 
 from __future__ import annotations
 
+import argparse
 import re
 import ssl
 import sys
 import time
 import urllib.error
 import urllib.request
-import argparse
 from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCES = [ROOT / "README.md"]
-SKIP_HOSTS = {"tech-info.top", "www.tech-info.top"}
+
+# 扫描这些目录下的页面源文件（相对仓库根）
+SCAN_DIRS = [ROOT, ROOT / "guides", ROOT / "airport", ROOT / "ai-api"]
+SCAN_SUFFIXES = (".md", ".html")
+# 品牌数据文件：推广入口集中在这里
+DATA_FILES = [ROOT / "_data" / "brands.yml"]
+SKIP_DIR_NAMES = {
+    ".git", ".github", "_site", "_data", "_includes", "_layouts", "assets",
+    "node_modules", "vendor", "tools", "docs",
+}
+SKIP_FILES = {"README.md", "404.html"}
+
+# 站内域名与统计脚本不计入推广链接巡检
+SKIP_HOSTS = {"tech-info.top", "www.tech-info.top", "hm.baidu.com"}
 UA = "Mozilla/5.0 (compatible; link-watch/1.0; +https://tech-info.top/)"
 WARN_STATUS = {401, 403, 429}
 RETRIES = 2
@@ -40,18 +57,51 @@ for _stream in (sys.stdout, sys.stderr):
         _stream.reconfigure(encoding="utf-8", errors="replace")
 
 
+def source_files() -> list[Path]:
+    found: list[Path] = []
+    for directory in SCAN_DIRS:
+        if not directory.exists():
+            continue
+        for path in sorted(directory.iterdir()):
+            if not path.is_file() or path.suffix not in SCAN_SUFFIXES:
+                continue
+            if path.name in SKIP_FILES or path.name.startswith((".", "_")):
+                continue
+            if set(path.relative_to(ROOT).parts) & SKIP_DIR_NAMES:
+                continue
+            if path not in found:
+                found.append(path)
+    return found
+
+
 def extract_links() -> list[str]:
     found: list[str] = []
+    seen: set[str] = set()
+
+    def add(url: str) -> None:
+        host = (urlparse(url).hostname or "").lower()
+        if not host or host in SKIP_HOSTS:
+            return
+        if url not in seen:
+            seen.add(url)
+            found.append(url)
+
     md_link = re.compile(r"\[[^\]]*\]\((https?://[^)\s]+)\)")
     bare_link = re.compile(r"<(https?://[^>\s]+)>")
-    for path in SOURCES:
-        text = path.read_text(encoding="utf-8")
-        for url in md_link.findall(text) + bare_link.findall(text):
-            host = (urlparse(url).hostname or "").lower()
-            if not host or host in SKIP_HOSTS:
-                continue
-            if url not in found:
-                found.append(url)
+    html_link = re.compile(r"""(?:href|src)\s*=\s*["'](https?://[^"']+)["']""")
+    yaml_url = re.compile(r"(?<![\w/])(https?://[^\s\"']+)")
+
+    for path in source_files():
+        text = path.read_text(encoding="utf-8", errors="replace")
+        for url in md_link.findall(text) + bare_link.findall(text) + html_link.findall(text):
+            add(url)
+
+    for path in DATA_FILES:
+        if not path.exists():
+            continue
+        for url in yaml_url.findall(path.read_text(encoding="utf-8", errors="replace")):
+            add(url.rstrip(","))
+
     return found
 
 
@@ -88,11 +138,22 @@ def probe(url: str) -> tuple[str, str]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--summary-file", default="")
+    parser.add_argument(
+        "--list-only",
+        action="store_true",
+        help="只列出扫到的链接，不发起网络请求（本地快速核对用）",
+    )
     args = parser.parse_args()
 
     links = extract_links()
     if not links:
         print("未在正文中找到需要检查的外部链接。")
+        return 0
+
+    if args.list_only:
+        print("扫到 %d 个外部链接：" % len(links))
+        for url in links:
+            print(" - " + url)
         return 0
 
     print("开始检查正文中的 %d 个外部链接：" % len(links))
