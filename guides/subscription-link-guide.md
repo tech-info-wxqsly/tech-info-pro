@@ -2,13 +2,15 @@
 layout: default
 title: "机场订阅链接怎么获取、怎么备份？以及链接泄露了怎么办"
 description: "订阅链接在哪里找、为什么它等同于账号密码、如何安全备份、链接泄露了怎么处理，以及导入时需要追加参数的常见情况。附订阅日常检查清单。"
+vertical: "shared"
+kind: "tutorial"
+nav_weight: 60
+updated: 2026-10-04
 ---
-
-[← 返回首页：线路资费与实测记录](../index.html)
 
 # 机场订阅链接：怎么获取、怎么备份、泄露了怎么办
 
-一句话结论：**订阅链接等于你的账号密码，不要发到任何公开场合。** 它一旦泄露，别人可以用你的流量，而你只能通过重置订阅地址来止损。
+订阅链接等于你的账号密码，别发到任何公开场合。 它一旦泄露，别人可以用你的流量，而你只能通过重置订阅地址来止损。
 
 ## 一、订阅链接在哪里
 
@@ -107,4 +109,4 @@ description: "订阅链接在哪里找、为什么它等同于账号密码、如
 * [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)
 * [小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)
 * [机场突然用不了怎么排查](proxy-down-diagnosis.html)
-* [返回首页：线路资费与实测记录](../index.html)
+* [2026机场实测：线路资费与避坑记录](../airport/index.html)

@@ -1,47 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 本文件由 tools/gen_sitemap.py 生成，请勿手工编辑。 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://tech-info.top/index.html</loc>
+    <loc>https://tech-info.top/</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://tech-info.top/guides/ios-proxy-setup.html</loc>
+    <loc>https://tech-info.top/ai-api/index.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://tech-info.top/guides/clash-verge-subscribe.html</loc>
+    <loc>https://tech-info.top/ai-api/ofox/claude-code-setup.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://tech-info.top/guides/shadowrocket-subscribe-troubleshooting.html</loc>
+    <loc>https://tech-info.top/ai-api/ofox/deepseek-harness-setup.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://tech-info.top/guides/desktop-client-windows-mac.html</loc>
+    <loc>https://tech-info.top/ai-api/ofox/index.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tech-info.top/guides/plan-choosing-guide.html</loc>
+    <loc>https://tech-info.top/ai-api/ofox/openrouter-vs-ofox.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://tech-info.top/guides/us-apple-id-register.html</loc>
+    <loc>https://tech-info.top/ai-api/ofox/pricing-guide.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/airport/index.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/airport/ktm/index.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/airport/mojie/index.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tech-info.top/guides/clash-verge-install.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://tech-info.top/guides/subscription-link-guide.html</loc>
+    <loc>https://tech-info.top/guides/clash-verge-subscribe.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/guides/desktop-client-windows-mac.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://tech-info.top/guides/hysteria2-vs-vless.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/guides/index.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/guides/ios-proxy-setup.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/guides/plan-choosing-guide.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://tech-info.top/guides/proxy-down-diagnosis.html</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/guides/shadowrocket-subscribe-troubleshooting.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/guides/subscription-link-guide.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tech-info.top/guides/us-apple-id-register.html</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

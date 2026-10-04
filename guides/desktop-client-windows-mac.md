@@ -2,13 +2,15 @@
 layout: default
 title: "电脑端科学上网客户端对比：Windows 与 macOS 该选哪个（2026）"
 description: "Windows 和 macOS 能用的代理客户端并不完全相同，Mac 上还要区分 Intel 与 Apple 芯片。本文对比两个平台的常见客户端、系统代理与 TUN 模式的差别，以及各自最容易踩的坑与选型建议。"
+vertical: "shared"
+kind: "tutorial"
+nav_weight: 30
+updated: 2026-10-04
 ---
-
-[← 返回首页：线路资费与实测记录](../index.html)
 
 # 电脑端科学上网客户端对比：Windows 与 macOS 该选哪个
 
-一句话结论：**两个平台的首选都是 Clash Verge Rev，它同时支持系统代理与 TUN 模式、能直接导入订阅；区别在于 macOS 上还有 Stash 这类付费但更省心的选择。**
+两个平台的首选都是 Clash Verge Rev——系统代理和 TUN 模式都支持，订阅也能直接导入；macOS 上另有 Stash 这类付费但更省心的选择。
 
 ## 先明确一件事
 
@@ -51,7 +53,7 @@ Windows 侧的常见问题是权限与拦截：开启 TUN 模式需要安装服�
 | 适合场景 | 浏览器、常见桌面应用 | 游戏、命令行工具、不遵守系统代理的软件 |
 | 常见副作用 | 部分程序漏走代理 | 与其它虚拟网卡类软件冲突 |
 
-结论很直接：**先用系统代理，发现某个程序不生效再开 TUN**。一上手就开 TUN，反而容易撞上各种网络冲突，排查起来更麻烦。
+先用系统代理，发现某个程序不生效再开 TUN。一上手就开 TUN，反而容易撞上各种网络冲突，排查起来更麻烦。
 
 ## 两个平台共同的坑
 
@@ -92,4 +94,4 @@ Windows 侧的常见问题是权限与拦截：开启 TUN 模式需要安装服�
 * [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)
 * [小火箭订阅导入失败排查](shadowrocket-subscribe-troubleshooting.html)
 * [机场套餐怎么选](plan-choosing-guide.html)
-* [返回首页：线路资费与实测记录](../index.html)
+* [2026机场实测：线路资费与避坑记录](../airport/index.html)

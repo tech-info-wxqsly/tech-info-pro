@@ -2,20 +2,22 @@
 layout: default
 title: "Clash Verge 订阅导入与分流教程：Windows / macOS（2026）"
 description: "Clash Verge 怎么导入机场订阅？讲清订阅导入的三种方式、节点测速、规则与全局模式的区别、TUN 模式什么时候开，以及订阅导入后没反应的排查顺序，Windows 与 macOS 通用。"
+vertical: "shared"
+kind: "tutorial"
+nav_weight: 20
+updated: 2026-10-04
 ---
-
-[← 返回首页：线路资费与实测记录](../index.html)
 
 # Clash Verge 订阅导入与分流教程
 
-一句话结论：**订阅导入有三种方式，最省事的是复制订阅链接后在客户端里选「从剪贴板导入」**。导入成功只是第一步，能不能用得舒服，取决于你后面选了什么代理模式和规则。
+订阅导入有三种方式，最省事的是复制链接后在客户端里选「从剪贴板导入」。导入成功只是第一步，能不能用得舒服，取决于你后面选了什么代理模式和规则。
 
 ## 开始之前
 
 需要准备两样东西：
 
 1. 一条可用的订阅链接。在机场后台的「一键订阅」或「复制订阅链接」处获取，通常是一串 `https://` 开头的地址；它等同于账号密码，获取与保管的注意事项见 [机场订阅链接怎么获取与备份](subscription-link-guide.html)。
-2. 客户端本体。本文以 **Clash Verge Rev** 为例，内核用的是 Mihomo（原 Clash Meta）。下载、安装与首次配置见 [Clash Verge 下载与安装教程](clash-verge-install.html)；请认准官方仓库的 Release 页面，别用来路不明的"绿色版"，这类客户端会读取你的全部流量配置。
+2. 客户端本体。这里以 Clash Verge Rev 为例，内核用的是 Mihomo（原 Clash Meta）。下载、安装与首次配置见 [Clash Verge 下载与安装教程](clash-verge-install.html)；请认准官方仓库的 Release 页面，别用来路不明的"绿色版"，这类客户端会读取你的全部流量配置。
 
 装好之后打开设置，先确认两件事：**混合端口**（默认 7890）和**语言**，端口号后面排查问题时要用到。
 
@@ -46,7 +48,7 @@ description: "Clash Verge 怎么导入机场订阅？讲清订阅导入的三种
 * 观察同一地区节点之间的差异，晚高峰尤其明显；
 * 记住两三个延迟最低、且连续几天都稳定的节点，作为主力。
 
-延迟数字只是参考，**能打开网页、看视频不转圈，才算真的好用**。有些节点延迟很低但丢包严重，实际体验反而更差。
+延迟数字只是参考，能打开网页、看视频不转圈才算真的好用。有些节点延迟很低但丢包严重，实际体验反而更差。
 
 ## 三、代理模式：规则、全局、直连
 
@@ -107,4 +109,4 @@ description: "Clash Verge 怎么导入机场订阅？讲清订阅导入的三种
 * [机场订阅链接怎么获取与备份](subscription-link-guide.html)
 * [电脑端科学上网客户端对比：Windows 与 macOS](desktop-client-windows-mac.html)
 * [机场套餐怎么选](plan-choosing-guide.html)
-* [返回首页：线路资费与实测记录](../index.html)
+* [2026机场实测：线路资费与避坑记录](../airport/index.html)

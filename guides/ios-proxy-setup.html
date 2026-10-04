@@ -1,45 +1,56 @@
+---
+# 这一页是手写的完整 HTML 文档（自带 head、样式与结构化数据），
+# 因此显式声明 layout: null，避免被套上主题布局导致容器与样式重复。
+layout: null
+title: "iPhone 代理客户端配置：电脑临时桥接与后续选择"
+description: "iPhone 客户端在不同 App Store 地区的可用性可能变化。本文介绍电脑临时桥接、账号切换风险与客户端选择；具体下载和账号要求以商店及 Apple 当前政策为准。"
+vertical: "shared"
+kind: "tutorial"
+nav_weight: 100
+updated: 2026-10-04
+---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iPhone 翻墙教程 2026：不装 Shadowrocket 也能先科学上网</title>
-<meta name="description" content="国内 App Store 上架不了 Shadowrocket，很多 iPhone 用户因此卡在死循环里。本文给出两条可选路线：先用电脑做跳板让手机立刻能科学上网，再准备自备美区账号安装原生翻墙客户端，附客户端挑选建议与常见问题排查。">
-<meta name="keywords" content="iPhone翻墙教程,iPhone科学上网,手机WiFi代理,允许局域网连接,美区Apple ID,Shadowrocket替代,小火箭替代,Clash Verge,FlClash">
+<title>iPhone 代理客户端配置：电脑临时桥接与后续选择</title>
+<meta name="description" content="iPhone 客户端在不同 App Store 地区的可用性可能变化。本文介绍电脑临时桥接、账号切换风险与客户端选择；具体下载和账号要求以商店及 Apple 当前政策为准。">
+<meta name="keywords" content="iPhone代理设置,手机WiFi代理,允许局域网连接,Apple账户地区,Shadowrocket替代,小火箭替代,Clash Verge,FlClash">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://tech-info.top/guides/ios-proxy-setup.html">
 <meta property="og:type" content="article">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:site_name" content="科学上网线路实测笔记">
-<meta property="og:title" content="iPhone 翻墙教程：不装 Shadowrocket 也能先科学上网">
-<meta property="og:description" content="先用电脑做跳板让 iPhone 立刻能科学上网，再准备自备美区账号安装原生翻墙客户端，附客户端挑选建议与常见问题排查。">
+<meta property="og:site_name" content="Tech-Info 实测笔记">
+<meta property="og:title" content="iPhone 代理客户端配置：电脑临时桥接与后续选择">
+<meta property="og:description" content="iPhone 客户端在不同 App Store 地区的可用性可能变化。本文介绍电脑临时桥接、账号切换风险与客户端选择；具体下载和账号要求以商店及 Apple 当前政策为准。">
 <meta property="og:url" content="https://tech-info.top/guides/ios-proxy-setup.html">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iPhone 翻墙教程：不装 Shadowrocket 也能先科学上网">
-<meta name="twitter:description" content="先用电脑做跳板让 iPhone 立刻能科学上网，再准备自备美区账号安装原生翻墙客户端。">
+<meta name="twitter:title" content="iPhone 代理客户端配置：电脑临时桥接与后续选择">
+<meta name="twitter:description" content="了解 iPhone 电脑临时桥接、账号切换风险与客户端选择，具体可用性和要求以 Apple 当前页面为准。">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Article",
-      "headline": "iPhone 翻墙教程：先借电脑过渡，再换原生客户端",
-      "description": "国内 App Store 上架不了 Shadowrocket，本文给出两条路线：先用电脑做跳板让手机立刻能科学上网，再准备自备美区账号安装原生客户端。",
+      "headline": "iPhone 代理客户端配置：电脑临时桥接与后续选择",
+      "description": "iPhone 客户端在不同 App Store 地区的可用性可能变化。本文介绍电脑临时桥接、账号切换风险与客户端选择；具体下载和账号要求以商店及 Apple 当前政策为准。",
       "inLanguage": "zh-CN",
       "mainEntityOfPage": "https://tech-info.top/guides/ios-proxy-setup.html",
-      "author": { "@type": "Organization", "name": "科学上网线路实测笔记" },
-      "publisher": { "@type": "Organization", "name": "科学上网线路实测笔记" },
+      "author": { "@type": "Organization", "name": "Tech-Info 实测笔记" },
+      "publisher": { "@type": "Organization", "name": "Tech-Info 实测笔记" },
       "dateModified": "2026-10-04"
     },
     {
       "@type": "HowTo",
-      "name": "iPhone 借电脑搭桥先科学上网",
+      "name": "iPhone 借电脑临时使用代理",
       "totalTime": "PT10M",
       "step": [
         { "@type": "HowToStep", "name": "打开客户端局域网共享", "text": "在 Clash Verge、FlClash 等客户端设置里打开允许局域网连接（Allow LAN），记下混合端口号，默认通常是 7890。" },
         { "@type": "HowToStep", "name": "查出电脑内网地址", "text": "Windows 执行 ipconfig、macOS 在网络设置里查看，记下无线网卡的 IPv4 地址。" },
         { "@type": "HowToStep", "name": "手机 WiFi 填手动代理", "text": "iPhone 设置 → 无线局域网 → 当前 WiFi 的 ⓘ → 配置代理改为手动，填刚才的地址与端口。" },
-        { "@type": "HowToStep", "name": "验证是否生效", "text": "用手机浏览器打开任意境外站点，能打开即为成功。" }
+        { "@type": "HowToStep", "name": "验证是否生效", "text": "使用你有权访问的测试网站或服务，检查代理配置是否按预期工作。" }
       ]
     },
     {
@@ -71,7 +82,7 @@
       "@type": "BreadcrumbList",
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://tech-info.top/" },
-        { "@type": "ListItem", "position": 2, "name": "iPhone 翻墙教程", "item": "https://tech-info.top/guides/ios-proxy-setup.html" }
+        { "@type": "ListItem", "position": 2, "name": "iPhone 代理客户端配置", "item": "https://tech-info.top/guides/ios-proxy-setup.html" }
       ]
     }
   ]
@@ -145,15 +156,15 @@ var _hmt = _hmt || [];
 <body>
 <main>
 
-<p><a href="../index.html">← 返回首页：线路资费与实测记录</a></p>
+<p><a href="../airport/index.html">← 2026机场实测：线路资费与避坑记录</a></p>
 
-<h1>iPhone 翻墙教程：先用电脑搭桥，再换原生客户端</h1>
+<h1>iPhone 代理客户端配置：电脑临时桥接与后续选择</h1>
 
 <p class="lead">只想应急，直接走路线一；想长期在手机上用，走路线二。两条路线可以按顺序来，也可以只挑需要的那条。</p>
 
 <blockquote>
-  <p>路线一是<strong>过渡方案</strong>：手机不装任何软件，借用电脑的网络出口，适合临时应急。<br>
-  路线二是<strong>长期方案</strong>：准备一个自己的美区 Apple ID，把原生客户端装进手机，之后不再依赖电脑。</p>
+  <p>路线一是<strong>过渡方案</strong>：手机不装任何软件，借用电脑的网络出口，适合临时使用。<br>
+  路线二是<strong>长期方案</strong>：在 App Store 选择所在地区当前可用的原生客户端，并按 Apple 现行账号与商店规则安装，之后手机可独立使用。</p>
 </blockquote>
 
 <h2>一、路线一：让电脑做跳板（手机端零安装）</h2>
@@ -179,28 +190,30 @@ var _hmt = _hmt || [];
   <li>iPhone 打开「设置 → 无线局域网」，点当前 WiFi 右侧的 ⓘ 图标。</li>
   <li>滑到最底部找到「配置代理」，切换成<strong>手动</strong>。</li>
   <li>服务器一栏填电脑的内网地址，端口填刚才记下的那个端口，保存。</li>
-  <li>用手机浏览器打开任意境外站点，能打开就说明通了。</li>
+  <li>使用你有权访问的测试网站或服务，检查代理配置是否按预期工作。</li>
 </ol>
 
 <h3>连不上时的排查顺序</h3>
 
 <div class="warn">
-<p>先确认手机和电脑在同一个网段（IP 前三段一致）；再检查 Windows 防火墙有没有拦掉这个端口的入站连接；如果是在酒店、商场或公司 WiFi 下，这类网络经常开了 AP 隔离，设备之间互相看不见——换成手机开热点、让电脑连热点，再走一遍上面的步骤通常就通了。</p>
+<p>先确认手机和电脑在同一个网段（IP 前三段一致）；再检查 Windows 防火墙有没有拦掉这个端口的入站连接；如果是在酒店、商场或公司 WiFi 下，这类网络经常开了 AP 隔离，设备之间互相看不见——优先改用可信的家庭网络测试；公共网络不适合开放代理端口。</p>
 </div>
 
-<h2>二、路线二：装原生客户端（需要一个自备的美区 Apple ID）</h2>
+<p><strong>安全收尾：</strong>开启「允许局域网连接」会让同一局域网内的设备尝试连接电脑代理。仅在可信网络下短时开启，用完后关闭 Allow LAN，并在 iPhone 的「配置代理」里恢复为「关闭」或原来的设置；不要在公共 WiFi 中长期开放，也不要为此关闭系统防火墙。</p>
 
-<p>想长期在手机上用，还是得装一个原生客户端。这类工具在国内区 App Store 已经下架，所以需要一个<strong>属于你自己的</strong>美区账号。不建议购买共享账号：随时可能被锁，还可能牵连到自己的设备。</p>
+<h2>二、路线二：安装原生客户端（以 App Store 当前可用性为准）</h2>
 
-<h3>第一步：注册属于你自己的美区账号</h3>
+<p>想长期在手机上使用，可以查看自己所在地区的 App Store 当前提供哪些客户端。应用上架情况与账号地区规则可能变化；如需切换「媒体与购买项目」账号，请遵循 Apple 当前要求，并使用自己可控的账号。不要把他人共享账号登录到 iCloud。</p>
 
-<p>先准备一个自己的美区 Apple ID：国家/地区选 <strong>United States</strong>，账单地址填免税州（例如 Oregon、Delaware），付款方式选 <strong>None / 无</strong>，注册邮箱单独准备一个。完整的注册步骤、地址填写规则与常见报错处理，见<a href="us-apple-id-register.html">美区 Apple ID 注册避坑</a>。</p>
+<h3>第一步：核对账号地区与商店要求</h3>
 
-<h3>第二步：切换商店账号并下载</h3>
+<p>如需切换账号地区或新建账号，先核对 Apple 当前的账号创建、地区与付款要求，只填写真实、准确且本人可使用的信息；不要使用虚构或他人的账单资料。流程与选项可能变化，详见<a href="us-apple-id-register.html">Apple 账号地区与购买项目注意事项</a>。</p>
+
+<h3>第二步：按 Apple 流程登录并下载</h3>
 
 <div class="box">
 <ol>
-  <li>iPhone 打开「设置 → 顶部 Apple 账户 → 媒体与购买项目」，退出当前账号，登录刚注册好的美区账号。</li>
+  <li>如需切换媒体与购买项目账号，按 Apple 官方当前步骤操作，并只登录自己可控且符合账号地区规则的账号。</li>
   <li>打开 App Store 搜索并安装你选定的客户端（下一节有对比）。</li>
   <li>装完可以切回自己的常用账号，已装的 App 不会被删除，但<strong>以后更新时要重新登录美区账号</strong>。</li>
 </ol>
@@ -278,14 +291,14 @@ var _hmt = _hmt || [];
 <h2>七、相关阅读</h2>
 
 <ul>
-  <li><a href="us-apple-id-register.html">美区 Apple ID 注册避坑</a> —— 注册、付款方式选 None 与常见报错处理。</li>
+  <li><a href="us-apple-id-register.html">Apple 账号地区与购买项目注意事项</a> —— 账号切换、资料安全与常见提示。</li>
   <li><a href="clash-verge-install.html">Clash Verge 下载与安装教程</a> —— 电脑做跳板之前，先把客户端装好。</li>
   <li><a href="clash-verge-subscribe.html">Clash Verge 订阅导入与分流教程</a> —— 导入订阅、测速与规则分流。</li>
   <li><a href="subscription-link-guide.html">机场订阅链接怎么获取与备份</a> —— 订阅链接从哪里拿、怎么保管。</li>
   <li><a href="plan-choosing-guide.html">机场套餐怎么选</a> —— 先用最小档试用时，怎么算单 GB 成本。</li>
 </ul>
 
-<p><a href="../index.html">← 返回首页：线路资费与实测记录</a></p>
+<p><a href="../airport/index.html">← 2026机场实测：线路资费与避坑记录</a></p>
 
 </main>
 

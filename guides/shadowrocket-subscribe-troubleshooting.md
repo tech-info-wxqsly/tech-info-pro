@@ -2,13 +2,15 @@
 layout: default
 title: "小火箭 Shadowrocket 订阅导入失败或连不上？常见原因与排查顺序"
 description: "Shadowrocket 订阅导不进去、导入后节点测不通、更新订阅报错，原因各不相同。本文把问题分成导入失败与连接失败两类，给出可以直接照做的排查顺序，并说明什么时候该切回美区账号更新客户端。"
+vertical: "shared"
+kind: "tutorial"
+nav_weight: 80
+updated: 2026-10-04
 ---
-
-[← 返回首页：线路资费与实测记录](../index.html)
 
 # 小火箭订阅导入失败或连不上：先分类，再按顺序试
 
-一句话结论：**先分清是"订阅没导进来"还是"导进来了但连不上"，这两类问题的原因几乎不重叠**。混在一起瞎试，只会越试越乱。
+先分清是"订阅没导进来"还是"导进来了但连不上"，这两类问题的原因几乎不重叠。混在一起瞎试，只会越试越乱。
 
 ## 第一节：判断你属于哪一类
 
@@ -99,4 +101,4 @@ Shadowrocket 对较新的协议（例如 Hysteria2、AnyTLS）支持依赖版本
 * [美区 Apple ID 注册避坑](us-apple-id-register.html)
 * [机场突然用不了怎么排查](proxy-down-diagnosis.html)
 * [机场套餐怎么选](plan-choosing-guide.html)
-* [返回首页：线路资费与实测记录](../index.html)
+* [2026机场实测：线路资费与避坑记录](../airport/index.html)

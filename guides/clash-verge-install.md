@@ -2,13 +2,15 @@
 layout: default
 title: "Clash Verge 下载与安装教程：Windows 与 macOS 分别怎么装（2026）"
 description: "Clash Verge Rev 去哪里下载、Windows 与 macOS 该选哪个安装包、Apple 芯片和 Intel 怎么区分、首次打开被系统拦截怎么处理，以及安装完成后需要先做哪些初始设置。"
+vertical: "shared"
+kind: "tutorial"
+nav_weight: 10
+updated: 2026-10-04
 ---
-
-[← 返回首页：线路资费与实测记录](../index.html)
 
 # Clash Verge 下载与安装：Windows 与 macOS 分别怎么装
 
-一句话结论：**只从官方仓库的 Release 页面下载，Windows 选 `x64` 安装包，macOS 必须先分清 Apple 芯片和 Intel 芯片。** 装完之后不要急着导入订阅，先把初始设置过一遍。
+下载只认官方仓库的 Release 页面：Windows 选 `x64` 安装包，macOS 得先分清 Apple 芯片和 Intel 芯片。 装完之后不要急着导入订阅，先把初始设置过一遍。
 
 ## 一、去哪里下载
 
@@ -30,7 +32,7 @@ Clash Verge 目前维护得最活跃的版本叫 **Clash Verge Rev**，代码和
 
 安装过程中的两个提示不用紧张：
 
-* **Windows SmartScreen 拦截**：点"更多信息 → 仍要运行"。未签名或新发布的程序常会遇到，前提是你从官方页面下载。
+* **Windows SmartScreen 拦截**：不要为了安装而关闭 SmartScreen。先核对下载来源、Release 版本及官方提供的签名或哈希；无法确认文件可信时不要运行，并查看项目的官方说明。
 * **请求安装服务组件**：只有开启 TUN 模式才需要，用来创建虚拟网卡。暂时用不到可以先跳过，之后开启时再装。
 
 ## 三、macOS 怎么装
@@ -40,7 +42,7 @@ Clash Verge 目前维护得最活跃的版本叫 **Clash Verge Rev**，代码和
 步骤：
 
 1. 下载 `.dmg`，打开后把图标拖进「应用程序」；
-2. 第一次打开若提示"无法验证开发者"，到「系统设置 → 隐私与安全性」，在下方找到被拦截的提示并选择"仍要打开"；
+2. 若 Gatekeeper 提示无法验证开发者，不要直接关闭系统防护或跳过检查；先核对 Release 来源、开发者签名/公证信息及官方校验说明，无法确认来源时不要打开；
 3. 开启 TUN 模式时会请求授权网络扩展，授权后一般需要重启一次客户端。
 
 ## 四、安装完成后的初始设置
@@ -96,4 +98,4 @@ Clash Verge 目前维护得最活跃的版本叫 **Clash Verge Rev**，代码和
 * [Clash Verge 订阅导入与分流教程](clash-verge-subscribe.html)
 * [电脑端科学上网客户端对比：Windows 与 macOS](desktop-client-windows-mac.html)
 * [机场订阅链接怎么获取与备份](subscription-link-guide.html)
-* [返回首页：线路资费与实测记录](../index.html)
+* [2026机场实测：线路资费与避坑记录](../airport/index.html)
